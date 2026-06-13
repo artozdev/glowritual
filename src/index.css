@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-cream text-sage-900 font-sans antialiased;
+  }
+
+  /* Cible de scroll douce */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Conteneur de page standard, mobile-first */
+  .container-app {
+    @apply mx-auto w-full max-w-5xl px-5 sm:px-6;
+  }
+
+  /* Carte de base du design system */
+  .card-surface {
+    @apply rounded-2xl border border-beige-200/70 bg-white shadow-soft;
+  }
+
+  /* Surface verre dépoli (glassmorphism léger) */
+  .glass {
+    @apply border border-white/60 bg-white/65 backdrop-blur-xl;
+  }
+}
+
+@layer utilities {
+  /* Texte équilibré sur plusieurs lignes (titres) */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Texte en dégradé sauge */
+  .text-gradient {
+    @apply bg-gradient-to-br from-sage-500 to-sage-700 bg-clip-text text-transparent;
+  }
+
+  /* Bordure en dégradé (anneau premium autour des cartes) */
+  .gradient-ring {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(#ffffff, #ffffff) padding-box,
+      linear-gradient(135deg, rgba(176, 193, 151, 0.6), rgba(220, 201, 168, 0.5)) border-box;
+  }
+
+  /* Grain subtil superposé pour casser l'aspect « plat » */
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Masque la scrollbar tout en gardant le scroll (pour carrousels) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

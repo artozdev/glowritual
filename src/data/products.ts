@@ -1,0 +1,423 @@
+import type { Product } from '@/types/products';
+
+/**
+ * ════════════════════════════════════════════════════════════════
+ *  CATALOGUE INTERNE DE PRODUITS NATURELS (source par défaut)
+ * ════════════════════════════════════════════════════════════════
+ *  Sélection de produits naturels/bio, bien notés, à composition
+ *  connue. Chaque produit liste sa composition (tokens normalisés)
+ *  → filtrée par la liste noire avant toute recommandation.
+ *
+ *  Les liens pointent vers le site officiel de la marque. Les images
+ *  sont illustratives (repli automatique si indisponibles).
+ *
+ *  En production, cette source est remplaçable par la table Supabase
+ *  `products` ou une API d'affiliation, derrière la même interface
+ *  (cf. lib/productProvider.ts).
+ * ════════════════════════════════════════════════════════════════
+ */
+
+const img = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=400&q=70`;
+
+export const PRODUCTS: Product[] = [
+  /* ── Hydratation visage ──────────────────────────────────────── */
+  {
+    id: 'hydra-serum-ha',
+    name: 'Sérum Hydratant Acide Hyaluronique',
+    brand: 'Typology',
+    category: 'serum',
+    need: 'hydration',
+    alsoHelps: ['radiance'],
+    price: 25,
+    rating: 4.6,
+    reviewCount: 2400,
+    labels: ['Vegan', 'Cruelty-free'],
+    imageUrl: img('1620916566398-39f1143ab7be'),
+    link: 'https://typology.com',
+    network: 'awin',
+    ingredients: [
+      'aqua',
+      'aloe barbadensis leaf juice',
+      'sodium hyaluronate',
+      'glycerin',
+      'panthenol',
+      'xanthan gum',
+      'citric acid',
+    ],
+    keyIngredients: [
+      { name: 'Acide hyaluronique végétal', benefit: 'retient l’eau dans l’épiderme et repulpe' },
+      { name: 'Aloe vera', benefit: 'apaise et hydrate sans effet gras' },
+    ],
+    application: 'Matin et soir, 2–3 gouttes sur peau propre, avant la crème.',
+    skinTypes: ['normal', 'dry', 'combination', 'sensitive', 'oily'],
+    vegan: true,
+  },
+  {
+    id: 'hydra-creme-aloe',
+    name: 'Crème Hydratante à l’Aloe Vera',
+    brand: 'Cattier',
+    category: 'cream',
+    need: 'hydration',
+    price: 14,
+    rating: 4.5,
+    reviewCount: 820,
+    labels: ['Cosmébio', 'Bio'],
+    imageUrl: img('1612817288484-6f916006741a'),
+    link: 'https://www.cattier-paris.com',
+    network: 'awin',
+    ingredients: [
+      'aloe barbadensis leaf juice',
+      'butyrospermum parkii (karite) butter',
+      'glycerin',
+      'helianthus annuus seed oil',
+      'tocopherol',
+    ],
+    keyIngredients: [
+      { name: 'Aloe vera bio', benefit: 'hydrate et apaise les peaux réactives' },
+      { name: 'Beurre de karité', benefit: 'nourrit et renforce la barrière cutanée' },
+    ],
+    application: 'Le matin sur l’ensemble du visage, après le sérum.',
+    skinTypes: ['normal', 'dry', 'sensitive', 'combination'],
+    vegan: true,
+  },
+
+  /* ── Éclat du teint ──────────────────────────────────────────── */
+  {
+    id: 'radiance-serum-vitc',
+    name: 'Sérum Éclat Vitamine C',
+    brand: 'Florame',
+    category: 'serum',
+    need: 'radiance',
+    alsoHelps: ['skin_renewal'],
+    price: 27,
+    rating: 4.5,
+    reviewCount: 1500,
+    labels: ['Cosmébio', 'Bio', 'Vegan'],
+    imageUrl: img('1608248543803-ba4f8c70ae0b'),
+    link: 'https://www.florame.com',
+    network: 'awin',
+    ingredients: [
+      'aqua',
+      'ascorbyl glucoside',
+      'malpighia glabra (acerola) extract',
+      'glycerin',
+      'niacinamide',
+      'sodium hyaluronate',
+    ],
+    keyIngredients: [
+      { name: 'Vitamine C stabilisée', benefit: 'illumine le teint et atténue les taches' },
+      { name: 'Acérola', benefit: 'antioxydant, protège de l’oxydation' },
+    ],
+    application: 'Le matin, quelques gouttes avant la crème de jour.',
+    skinTypes: ['normal', 'combination', 'oily', 'dry'],
+    vegan: true,
+  },
+  {
+    id: 'radiance-huile-rose',
+    name: 'Huile Précieuse à la Rose Musquée',
+    brand: 'Melvita',
+    category: 'oil',
+    need: 'radiance',
+    alsoHelps: ['hydration'],
+    price: 29,
+    rating: 4.7,
+    reviewCount: 1100,
+    labels: ['Ecocert', 'Bio', 'Slow Cosmétique'],
+    imageUrl: img('1556228720-195a672e8a03'),
+    link: 'https://www.melvita.fr',
+    network: 'awin',
+    ingredients: [
+      'rosa moschata seed oil',
+      'argania spinosa kernel oil',
+      'tocopherol',
+    ],
+    keyIngredients: [
+      { name: 'Rose musquée', benefit: 'régénère et unifie le teint' },
+      { name: 'Argan', benefit: 'nourrit et assouplit' },
+    ],
+    application: 'Le soir, 3–4 gouttes lissées sur le visage.',
+    skinTypes: ['normal', 'dry', 'combination'],
+  },
+
+  /* ── Cernes / contour de l'œil ───────────────────────────────── */
+  {
+    id: 'eye-contour-caffeine',
+    name: 'Soin Contour des Yeux Décongestionnant',
+    brand: 'Sanoflore',
+    category: 'serum',
+    need: 'eye_care',
+    price: 19,
+    rating: 4.4,
+    reviewCount: 640,
+    labels: ['Cosmébio', 'Bio'],
+    imageUrl: img('1571781926291-c477ebfd024b'),
+    link: 'https://www.sanoflore.net',
+    network: 'awin',
+    ingredients: [
+      'aqua',
+      'caffeine',
+      'ruscus aculeatus root extract',
+      'sodium hyaluronate',
+      'glycerin',
+      'aloe barbadensis leaf juice',
+    ],
+    keyIngredients: [
+      { name: 'Caféine végétale', benefit: 'active la microcirculation et décongestionne' },
+      { name: 'Petit houx (Ruscus)', benefit: 'atténue poches et cernes bleutés' },
+    ],
+    application: 'Matin, tapoter une noisette sur le contour de l’œil.',
+    skinTypes: ['normal', 'dry', 'combination', 'sensitive', 'oily'],
+    vegan: true,
+  },
+
+  /* ── Texture / grain de peau ─────────────────────────────────── */
+  {
+    id: 'renewal-bakuchiol',
+    name: 'Sérum Rénovateur au Bakuchiol',
+    brand: 'Typology',
+    category: 'serum',
+    need: 'skin_renewal',
+    alsoHelps: ['radiance'],
+    price: 30,
+    rating: 4.6,
+    reviewCount: 1800,
+    labels: ['Vegan', 'Cruelty-free'],
+    imageUrl: img('1598440947619-2c35fc9aa908'),
+    link: 'https://typology.com',
+    network: 'awin',
+    ingredients: [
+      'aqua',
+      'bakuchiol',
+      'niacinamide',
+      'glycerin',
+      'aloe barbadensis leaf juice',
+      'tocopherol',
+    ],
+    keyIngredients: [
+      { name: 'Bakuchiol', benefit: 'alternative douce au rétinol, affine le grain de peau' },
+      { name: 'Niacinamide', benefit: 'resserre les pores et lisse le relief' },
+    ],
+    application: 'Le soir, quelques gouttes sur peau propre (évitez le contour des yeux).',
+    skinTypes: ['normal', 'combination', 'oily', 'dry'],
+    vegan: true,
+  },
+  {
+    id: 'renewal-gommage',
+    name: 'Gommage Doux Enzymatique',
+    brand: 'Centifolia',
+    category: 'mask',
+    need: 'skin_renewal',
+    price: 16,
+    rating: 4.4,
+    reviewCount: 540,
+    labels: ['Cosmébio', 'Bio'],
+    imageUrl: img('1631730359585-38a4935cbec4'),
+    link: 'https://www.centifolia-bio.fr',
+    network: 'awin',
+    ingredients: [
+      'aqua',
+      'carica papaya fruit extract',
+      'kaolin',
+      'glycerin',
+      'aloe barbadensis leaf juice',
+    ],
+    keyIngredients: [
+      { name: 'Enzymes de papaye', benefit: 'exfolient en douceur sans grains abrasifs' },
+      { name: 'Kaolin', benefit: 'purifie et affine le grain' },
+    ],
+    application: 'Une fois par semaine, 5 min puis rincer à l’eau tiède.',
+    skinTypes: ['normal', 'combination', 'oily'],
+    vegan: true,
+  },
+
+  /* ── Lèvres & sourcils ───────────────────────────────────────── */
+  {
+    id: 'lip-balm-karite',
+    name: 'Baume Lèvres Nourrissant au Karité',
+    brand: 'Avril',
+    category: 'balm',
+    need: 'lip_brow_care',
+    price: 6,
+    rating: 4.7,
+    reviewCount: 920,
+    labels: ['Ecocert', 'Bio'],
+    imageUrl: img('1556228578-8c89e6adf883'),
+    link: 'https://avril-beaute.fr',
+    network: 'awin',
+    ingredients: [
+      'butyrospermum parkii (karite) butter',
+      'cocos nucifera (coconut) oil',
+      'cera alba (cire d abeille)',
+      'tocopherol',
+    ],
+    keyIngredients: [
+      { name: 'Beurre de karité', benefit: 'répare et nourrit les lèvres gercées' },
+      { name: 'Huile de coco', benefit: 'assouplit et protège' },
+    ],
+    application: 'Au besoin sur les lèvres, et le soir en couche généreuse.',
+  },
+  {
+    id: 'brow-ricin',
+    name: 'Huile de Ricin Sourcils & Cils',
+    brand: 'Centifolia',
+    category: 'oil',
+    need: 'lip_brow_care',
+    price: 9,
+    rating: 4.5,
+    reviewCount: 1260,
+    labels: ['Cosmébio', 'Bio', 'Vegan'],
+    imageUrl: img('1620916566398-39f1143ab7be'),
+    link: 'https://www.centifolia-bio.fr',
+    network: 'awin',
+    ingredients: ['ricinus communis seed oil', 'tocopherol'],
+    keyIngredients: [
+      { name: 'Huile de ricin', benefit: 'fortifie et densifie sourcils et cils' },
+    ],
+    application: 'Le soir, une goutte au pinceau sur sourcils et cils.',
+    vegan: true,
+  },
+
+  /* ── Fermeté / tonus du visage (symétrie) ────────────────────── */
+  {
+    id: 'firm-guasha',
+    name: 'Gua Sha en Quartz Rose',
+    brand: 'Lamazuna',
+    category: 'tool',
+    need: 'firmness',
+    alsoHelps: ['eye_care'],
+    price: 18,
+    rating: 4.5,
+    reviewCount: 730,
+    labels: ['Vegan', 'Cruelty-free'],
+    imageUrl: img('1631730359585-38a4935cbec4'),
+    link: 'https://www.lamazuna.com',
+    network: 'awin',
+    ingredients: [], // accessoire : aucune composition cosmétique
+    keyIngredients: [
+      { name: 'Massage gua sha', benefit: 'stimule la circulation et détend les traits' },
+    ],
+    application: '2–3 min/jour avec une huile, du centre vers l’extérieur du visage.',
+  },
+  {
+    id: 'firm-huile-massage',
+    name: 'Huile de Massage Visage Raffermissante',
+    brand: 'Melvita',
+    category: 'oil',
+    need: 'firmness',
+    alsoHelps: ['hydration'],
+    price: 24,
+    rating: 4.4,
+    reviewCount: 410,
+    labels: ['Ecocert', 'Bio'],
+    imageUrl: img('1608248543803-ba4f8c70ae0b'),
+    link: 'https://www.melvita.fr',
+    network: 'awin',
+    ingredients: [
+      'argania spinosa kernel oil',
+      'rosa moschata seed oil',
+      'tocopherol',
+    ],
+    keyIngredients: [
+      { name: 'Argan', benefit: 'assouplit la peau et facilite le massage' },
+    ],
+    application: 'Le soir, en massage tonique du visage (idéal avec un gua sha).',
+    skinTypes: ['normal', 'dry', 'combination'],
+  },
+
+  /* ── Hydratation du corps ────────────────────────────────────── */
+  {
+    id: 'body-amande',
+    name: 'Huile Corps Amande Douce Bio',
+    brand: 'Florame',
+    category: 'oil',
+    need: 'body_hydration',
+    price: 12,
+    rating: 4.6,
+    reviewCount: 1000,
+    labels: ['Cosmébio', 'Bio'],
+    imageUrl: img('1556228720-195a672e8a03'),
+    link: 'https://www.florame.com',
+    network: 'awin',
+    ingredients: ['prunus amygdalus dulcis (sweet almond) oil', 'tocopherol'],
+    keyIngredients: [
+      { name: 'Amande douce', benefit: 'nourrit intensément et assouplit la peau' },
+    ],
+    application: 'Après la douche, sur peau encore humide.',
+    skinTypes: ['dry', 'normal', 'sensitive'],
+  },
+  {
+    id: 'body-karite',
+    name: 'Beurre de Karité Brut Équitable',
+    brand: 'Centifolia',
+    category: 'balm',
+    need: 'body_hydration',
+    price: 10,
+    rating: 4.7,
+    reviewCount: 2050,
+    labels: ['Ecocert', 'Bio', 'Slow Cosmétique'],
+    imageUrl: img('1612817288484-6f916006741a'),
+    link: 'https://www.centifolia-bio.fr',
+    network: 'awin',
+    ingredients: ['butyrospermum parkii (karite) butter'],
+    keyIngredients: [
+      { name: 'Karité 100 %', benefit: 'répare les zones très sèches (coudes, genoux)' },
+    ],
+    application: 'Réchauffer une noisette entre les mains, masser les zones sèches.',
+    vegan: true,
+  },
+
+  /* ── Tonus du corps ──────────────────────────────────────────── */
+  {
+    id: 'body-tonus-bouleau',
+    name: 'Huile Tonifiante au Bouleau',
+    brand: 'Weleda',
+    category: 'oil',
+    need: 'body_firmness',
+    price: 22,
+    rating: 4.3,
+    reviewCount: 560,
+    labels: ['Bio', 'Cruelty-free'],
+    imageUrl: img('1571781926291-c477ebfd024b'),
+    link: 'https://www.weleda.fr',
+    network: 'awin',
+    ingredients: [
+      'prunus amygdalus dulcis (sweet almond) oil',
+      'betula alba leaf extract',
+      'rosmarinus officinalis leaf oil',
+    ],
+    keyIngredients: [
+      { name: 'Bouleau', benefit: 'tonifie et raffermit visiblement la peau' },
+      { name: 'Romarin', benefit: 'stimule la microcirculation' },
+    ],
+    application: 'Matin, en massage circulaire sur les zones ciblées.',
+    skinTypes: ['normal', 'dry'],
+  },
+
+  /* ── Posture / bien-être ─────────────────────────────────────── */
+  {
+    id: 'wellness-magnesium',
+    name: 'Magnésium Marin + Vitamine B6',
+    brand: 'D-LAB',
+    category: 'supplement',
+    need: 'posture_wellness',
+    price: 18,
+    rating: 4.5,
+    reviewCount: 1340,
+    labels: ['Vegan'],
+    imageUrl: img('1598440947619-2c35fc9aa908'),
+    link: 'https://www.dlab-nutricosmetics.com',
+    network: 'awin',
+    ingredients: [
+      'magnesium marin',
+      'vitamine b6',
+      'gelule vegetale (pullulan)',
+    ],
+    keyIngredients: [
+      { name: 'Magnésium marin', benefit: 'aide à relâcher les tensions musculaires' },
+      { name: 'Vitamine B6', benefit: 'favorise l’assimilation du magnésium' },
+    ],
+    application: '1 gélule par jour au cours d’un repas, en cure de 1 à 3 mois.',
+    vegan: true,
+  },
+];
