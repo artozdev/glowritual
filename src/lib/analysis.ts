@@ -1,5 +1,6 @@
 import { mulberry32, average, clamp } from './utils';
 import { FACE_CONTENT, BODY_CONTENT, type CriterionContent } from './recommendations';
+import { CRITERION_ZONE } from './scanZones';
 import { CONCERN_TO_CRITERION } from '@/data/profileOptions';
 import type { UserProfile } from '@/types/profile';
 import type {
@@ -128,7 +129,9 @@ function positionFor(
   if (input.kind === 'face' && input.landmarks && id in FACE_LANDMARK_INDEX) {
     const idx = FACE_LANDMARK_INDEX[id as FaceCriterionId];
     const p = input.landmarks[idx];
-    if (p) return { x: clamp(p.x, 0, 1), y: clamp(p.y, 0, 1) };
+    // L'image globale est conservée en miroir (aperçu selfie) : on reflète donc
+    // l'abscisse du repère pour que le point se superpose à la bonne zone.
+    if (p) return { x: clamp(1 - p.x, 0, 1), y: clamp(p.y, 0, 1) };
   }
   return content.position;
 }
@@ -230,6 +233,7 @@ function buildCriterion(
     recommendation: content.recommendation,
     need: CRITERION_NEED[id],
     priority,
+    zone: CRITERION_ZONE[id],
   };
 }
 
