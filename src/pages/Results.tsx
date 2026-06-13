@@ -18,7 +18,8 @@ import { PointDetailSheet } from '@/components/results/PointDetailSheet';
 import { CRITERION_ICON } from '@/components/results/criterionMeta';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
 import { useScanSession } from '@/hooks/useScanSession';
-import { scoreHeadline, formatDate } from '@/lib/utils';
+import { scoreHeadline, formatDate, average } from '@/lib/utils';
+import { ZONE_STEPS, ZONE_META } from '@/lib/scanZones';
 import type { CriterionResult } from '@/types/domain';
 
 export default function Results() {
@@ -66,6 +67,13 @@ export default function Results() {
             Analyse du {formatDate(createdAt)} ·{' '}
             {scan.kind === 'face' ? 'Visage' : 'Corps'}
           </p>
+          {scan.conditions && (
+            <p className="mt-1 text-xs text-sage-400">
+              Conditions : luminosité {Math.round(scan.conditions.brightness * 100)}
+              % · cadrage {Math.round(scan.conditions.faceSize * 100)}% — reproduisez-les
+              au prochain scan pour comparer.
+            </p>
+          )}
         </div>
         <Link to="/scan" className="hidden sm:block">
           <Button variant="outline" size="sm">
@@ -133,6 +141,82 @@ export default function Results() {
           </Card>
         </div>
       </div>
+
+      {/* Analyse par zone (parcours guidé) */}
+      {(() => {
+        const zoneCards = ZONE_STEPS.map((zs) => {
+          const criteria = analysis.criteria.filter((c) => c.zone === zs.id);
+          if (criteria.length === 0) return null;
+          const capture = scan.zones?.find((z) => z.zone === zs.id);
+          const zoneScore = Math.round(average(criteria.map((c) => c.score)));
+          return { zs, criteria, capture, zoneScore };
+        }).filter(Boolean) as {
+          zs: (typeof ZONE_STEPS)[number];
+          criteria: CriterionResult[];
+          capture?: { image: string | null };
+          zoneScore: number;
+        }[];
+        if (zoneCards.length === 0) return null;
+
+        return (
+          <>
+            <h2 className="mt-8 text-lg font-semibold text-sage-900">
+              Analyse par zone
+            </h2>
+            <p className="mt-1 text-sm text-sage-500">
+              Chaque zone scannée a été analysée séparément.
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {zoneCards.map(({ zs, criteria, capture, zoneScore }) => (
+                <Card key={zs.id} className="flex gap-3 p-3">
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-sage-100 to-beige-100">
+                    {capture?.image ? (
+                      <img
+                        src={capture.image}
+                        alt={ZONE_META[zs.id].label}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <ScanFace
+                          className="h-8 w-8 text-sage-300"
+                          strokeWidth={1.5}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-sm font-semibold text-sage-900">
+                        {ZONE_META[zs.id].label}
+                      </p>
+                      <span className="text-sm font-semibold text-sage-700">
+                        {zoneScore}
+                      </span>
+                    </div>
+                    <p className="truncate text-xs text-sage-500">
+                      {ZONE_META[zs.id].blurb}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {criteria.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => setSelected(c)}
+                          className="inline-flex items-center gap-1 rounded-full bg-sage-50 px-2 py-0.5 text-xs font-medium text-sage-600 transition-colors hover:bg-sage-100"
+                        >
+                          {c.label}
+                          <span className="text-sage-400">{c.score}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </>
+        );
+      })()}
 
       {/* Liste des critères */}
       <h2 className="mt-8 text-lg font-semibold text-sage-900">Le détail</h2>

@@ -15,10 +15,13 @@ const WASM_URL = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERS
 const MODEL_URL =
   'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
 
-// Singleton : on ne crée le détecteur qu'une seule fois.
-let landmarkerPromise: Promise<FaceLandmarker> | null = null;
+type RunningMode = 'IMAGE' | 'VIDEO';
 
-async function createLandmarker(): Promise<FaceLandmarker> {
+// Singletons : un détecteur par mode (IMAGE = capture figée, VIDEO = temps réel).
+let imagePromise: Promise<FaceLandmarker> | null = null;
+let videoPromise: Promise<FaceLandmarker> | null = null;
+
+async function createLandmarker(runningMode: RunningMode): Promise<FaceLandmarker> {
   // Import dynamique → chunk séparé.
   const { FilesetResolver, FaceLandmarker } = await import(
     '@mediapipe/tasks-vision'
@@ -27,7 +30,7 @@ async function createLandmarker(): Promise<FaceLandmarker> {
 
   const options = {
     baseOptions: { modelAssetPath: MODEL_URL },
-    runningMode: 'IMAGE' as const,
+    runningMode,
     numFaces: 1,
   };
 
@@ -45,10 +48,31 @@ async function createLandmarker(): Promise<FaceLandmarker> {
   }
 }
 
-/** Précharge le détecteur (à appeler quand la caméra est prête, par ex.). */
+/** Précharge le détecteur image (capture figée). */
 export function prepareFaceLandmarker(): Promise<FaceLandmarker> {
-  landmarkerPromise ??= createLandmarker();
-  return landmarkerPromise;
+  imagePromise ??= createLandmarker('IMAGE');
+  return imagePromise;
+}
+
+/** Précharge le détecteur vidéo (suivi temps réel du flux caméra). */
+export function prepareFaceLandmarkerVideo(): Promise<FaceLandmarker> {
+  videoPromise ??= createLandmarker('VIDEO');
+  return videoPromise;
+}
+
+/**
+ * Détecte les repères sur une image vidéo (mode temps réel).
+ * `timestampMs` doit être strictement croissant entre les appels.
+ */
+export function detectVideoFrame(
+  landmarker: FaceLandmarker,
+  video: HTMLVideoElement,
+  timestampMs: number,
+): NormalizedPoint[] | null {
+  const result = landmarker.detectForVideo(video, timestampMs);
+  const face = result.faceLandmarks?.[0];
+  if (!face || face.length === 0) return null;
+  return face.map((p) => ({ x: p.x, y: p.y }));
 }
 
 /** Charge une dataURL en élément image décodé. */

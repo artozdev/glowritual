@@ -80,8 +80,55 @@ export function useCamera() {
     return canvas.toDataURL('image/jpeg', 0.85);
   }, []);
 
+  /**
+   * Capture une sous-zone (boîte normalisée en espace vidéo) en dataURL.
+   * Le rendu est mis en miroir pour rester cohérent avec l'aperçu selfie.
+   */
+  const captureRegion = useCallback(
+    (
+      box: { minX: number; minY: number; maxX: number; maxY: number },
+      pad = 0,
+    ): string | null => {
+      const video = videoRef.current;
+      if (!video || !video.videoWidth) return null;
+      const VW = video.videoWidth;
+      const VH = video.videoHeight;
+
+      // Bornes en espace miroir (affichage selfie).
+      const minX = Math.max(0, 1 - (box.maxX + pad));
+      const maxX = Math.min(1, 1 - (box.minX - pad));
+      const minY = Math.max(0, box.minY - pad);
+      const maxY = Math.min(1, box.maxY + pad);
+      const sx = minX * VW;
+      const sy = minY * VH;
+      const sw = (maxX - minX) * VW;
+      const sh = (maxY - minY) * VH;
+      if (sw < 4 || sh < 4) return null;
+
+      // Cadre complet en miroir, puis découpe (la découpe correspond ainsi
+      // exactement à l'image globale selfie conservée).
+      const full = document.createElement('canvas');
+      full.width = VW;
+      full.height = VH;
+      const fctx = full.getContext('2d');
+      if (!fctx) return null;
+      fctx.translate(VW, 0);
+      fctx.scale(-1, 1);
+      fctx.drawImage(video, 0, 0, VW, VH);
+
+      const out = document.createElement('canvas');
+      out.width = Math.round(sw);
+      out.height = Math.round(sh);
+      const octx = out.getContext('2d');
+      if (!octx) return null;
+      octx.drawImage(full, sx, sy, sw, sh, 0, 0, out.width, out.height);
+      return out.toDataURL('image/jpeg', 0.85);
+    },
+    [],
+  );
+
   // Coupe le flux quand le composant se démonte.
   useEffect(() => stop, [stop]);
 
-  return { videoRef, status, error, start, stop, capture };
+  return { videoRef, status, error, start, stop, capture, captureRegion };
 }

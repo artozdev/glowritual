@@ -33,3 +33,6 @@ pnpm-debug.log*
 *.sw?
 .vercel
 .env*
+
+# TS incremental build cache
+tsconfig.tsbuildinfo

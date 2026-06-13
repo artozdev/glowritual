@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Camera, Sparkles, Crown, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Crown, Lock, ScanFace, Sparkles, Wand2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Sheet } from '@/components/ui/Sheet';
-import { CameraView } from '@/components/scan/CameraView';
-import { CaptureButton } from '@/components/scan/CaptureButton';
+import { GuidedScan, type GuidedScanResult } from '@/components/scan/GuidedScan';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
-import { useCamera } from '@/hooks/useCamera';
-import { useFaceLandmarker } from '@/hooks/useFaceLandmarker';
+import { ZONE_STEPS } from '@/lib/scanZones';
 import { useScanSession } from '@/hooks/useScanSession';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
@@ -24,45 +22,22 @@ export default function Scan() {
   const { saveScan, realScanCount } = useScanSession();
   const { user, upgradeDemo } = useAuth();
   const { profile } = useProfile();
-  const { videoRef, status, error, start, stop, capture } = useCamera();
-  const { prepare, detect } = useFaceLandmarker();
 
-  const [analyzing, setAnalyzing] = useState(false);
-  const [step, setStep] = useState<string>('');
+  const [started, setStarted] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
 
   const isPremium = user?.plan === 'premium';
   const canScan = isPremium || realScanCount < FREE_SCAN_LIMIT;
 
-  // Précharge le détecteur dès que la caméra est prête (UX : prêt à temps).
-  useEffect(() => {
-    if (status === 'ready') void prepare();
-  }, [status, prepare]);
-
-  /**
-   * Capture → détection MediaPipe (locale) → analyse → résultats.
-   * En l'absence de visage détecté (ou en mode démo sans image), on bascule
-   * proprement sur le moteur heuristique.
-   */
-  async function runAnalysis(image: string | null) {
-    // Garde-fou freemium : 1 scan offert, puis invitation Premium.
-    if (!canScan) {
-      setShowUpgrade(true);
-      return;
-    }
-    setAnalyzing(true);
-
-    let landmarks: NormalizedPoint[] | null = null;
-    if (image) {
-      setStep('Détection des repères du visage…');
-      landmarks = await detect(image);
-    }
-
-    setStep('Analyse bienveillante en cours…');
+  /** Construit l'analyse à partir des repères + zones, puis ouvre les résultats. */
+  function buildAndSave(
+    image: string | null,
+    landmarks: NormalizedPoint[] | null,
+    result?: GuidedScanResult,
+  ) {
     const seed = landmarks
       ? seedFromLandmarks(landmarks)
       : Math.floor(Math.random() * 1_000_000_000);
-
     const analysis = analyze({ kind: 'face', seed, landmarks, profile });
 
     const scan: StoredScan = {
@@ -73,25 +48,48 @@ export default function Scan() {
       overall: analysis.overall,
       analysis,
       createdAt: new Date().toISOString(),
+      zones: result?.zones,
+      conditions: result?.conditions,
     };
     saveScan(scan);
-    stop();
     navigate(`/results/${scan.id}`);
   }
 
+  function handleComplete(result: GuidedScanResult) {
+    buildAndSave(result.image, result.landmarks, result);
+  }
+
+  function startScan() {
+    if (!canScan) {
+      setShowUpgrade(true);
+      return;
+    }
+    setStarted(true);
+  }
+
+  // ── Parcours de scan guidé en cours ──────────────────────────────
+  if (started) {
+    return (
+      <div className="mx-auto max-w-xl">
+        <GuidedScan onComplete={handleComplete} onExit={() => setStarted(false)} />
+      </div>
+    );
+  }
+
+  // ── Écran d'accueil du scan ──────────────────────────────────────
   return (
     <div className="mx-auto max-w-xl">
       <div className="text-center">
         <h1 className="text-2xl font-semibold tracking-tight text-sage-900">
           {profile.displayName
             ? `Prêt·e, ${profile.displayName} ?`
-            : 'Analyse du visage'}
+            : 'Analyse guidée du visage'}
         </h1>
-        <p className="mt-1 text-sage-600">
-          Cadrez-vous dans le repère et capturez. L’analyse se fait sur votre
-          appareil.
+        <p className="mt-1.5 text-sage-600">
+          Un parcours étape par étape, zone par zone, pour une analyse précise.
+          Tout se passe sur votre appareil — vos photos ne quittent jamais le
+          téléphone.
         </p>
-        {/* Indicateur freemium */}
         <div className="mt-3 flex justify-center">
           {isPremium ? (
             <Badge tone="sage">
@@ -107,52 +105,55 @@ export default function Scan() {
         </div>
       </div>
 
-      {/* Caméra */}
-      <div className="relative mt-6">
-        <CameraView videoRef={videoRef} status={status} error={error} kind="face" />
-
-        {/* Voile d'analyse */}
-        <AnimatePresence>
-          {analyzing && (
-            <motion.div
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl bg-sage-900/55 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+      {/* Aperçu des étapes */}
+      <div className="mt-6 rounded-3xl border border-beige-200 bg-white p-5 shadow-soft">
+        <p className="flex items-center gap-2 text-sm font-semibold text-sage-900">
+          <Wand2 className="h-4 w-4 text-sage-500" />
+          Les {ZONE_STEPS.length} étapes du scan
+        </p>
+        <ol className="mt-3 grid gap-2">
+          {ZONE_STEPS.map((s, i) => (
+            <motion.li
+              key={s.id}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="flex items-center gap-3 rounded-2xl bg-beige-50 px-3 py-2.5"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/90">
-                <Sparkles className="h-6 w-6 animate-pulse text-sage-500" />
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage-100 text-xs font-semibold text-sage-700">
+                {i + 1}
               </span>
-              <p className="px-6 text-center text-sm font-medium text-white">
-                {step || 'Analyse en cours…'}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-sage-900">{s.title}</p>
+                <p className="truncate text-xs text-sage-500">{s.instruction}</p>
+              </div>
+            </motion.li>
+          ))}
+        </ol>
+        <p className="mt-3 flex items-start gap-2 rounded-2xl bg-sage-50 px-3 py-2.5 text-xs text-sage-600">
+          <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sage-500" />
+          Placez-vous face à une source de lumière douce. Le cadre devient vert
+          quand la zone est bien positionnée : restez immobile, la capture est
+          automatique.
+        </p>
       </div>
 
-      {/* Contrôles */}
+      {/* Actions */}
       <div className="mt-6 flex flex-col items-center gap-3">
-        {status === 'ready' ? (
-          <>
-            <CaptureButton onClick={() => runAnalysis(capture())} disabled={analyzing} />
-            <p className="text-xs text-sage-400">Appuyez pour capturer</p>
-          </>
-        ) : (
-          <Button onClick={start} disabled={analyzing} className="w-full sm:w-auto">
-            <Camera className="h-5 w-5" />
-            {status === 'denied' || status === 'unavailable'
-              ? 'Réessayer la caméra'
-              : 'Activer la caméra'}
-          </Button>
-        )}
-
-        {/* Repli démonstration (toujours dispo : utile sans caméra) */}
+        <Button size="lg" className="w-full sm:w-auto" onClick={startScan}>
+          <ScanFace className="h-5 w-5" />
+          Commencer le scan guidé
+        </Button>
         <button
           type="button"
-          onClick={() => runAnalysis(null)}
-          disabled={analyzing}
-          className="text-sm font-medium text-sage-500 underline-offset-4 hover:text-sage-700 hover:underline disabled:opacity-50"
+          onClick={() => {
+            if (!canScan) {
+              setShowUpgrade(true);
+              return;
+            }
+            buildAndSave(null, null);
+          }}
+          className="text-sm font-medium text-sage-500 underline-offset-4 hover:text-sage-700 hover:underline"
         >
           Analyser une photo de démonstration
         </button>

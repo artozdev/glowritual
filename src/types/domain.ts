@@ -41,6 +41,32 @@ export interface NormalizedPoint {
   y: number;
 }
 
+/** Zone faciale ciblée par le parcours de scan guidé. */
+export type ScanZoneId = 'global' | 'eyes' | 'nose' | 'mouth' | 'jaw';
+
+/** Capture d'une zone du visage (parcours guidé). */
+export interface ScanZoneCapture {
+  zone: ScanZoneId;
+  /** Vignette de la zone (dataURL) — `null` si non conservée. */
+  image: string | null;
+  /** Luminosité mesurée sur la zone (0..1). */
+  brightness: number;
+  /** Taille du visage dans le cadre au moment de la capture (0..1). */
+  faceSize: number;
+  capturedAt: string; // ISO
+}
+
+/**
+ * Conditions moyennes du scan — enregistrées pour guider l'utilisateur à
+ * reproduire les mêmes conditions au scan suivant (comparaison fiable).
+ */
+export interface ScanConditions {
+  /** Luminosité moyenne (0..1). */
+  brightness: number;
+  /** Distance moyenne (proxy : taille du visage, 0..1). */
+  faceSize: number;
+}
+
 /** Résultat d'un critère unique. */
 export interface CriterionResult {
   id: CriterionId;
@@ -55,6 +81,8 @@ export interface CriterionResult {
   need: ProductNeed;
   /** Priorité 0..100 (plus haut = plus à sublimer ; dérivé du score). */
   priority: number;
+  /** Zone du visage analysée (parcours guidé) — absent pour le corps. */
+  zone?: ScanZoneId;
 }
 
 /** Analyse complète d'un scan. */
@@ -87,6 +115,10 @@ export interface StoredScan {
   overall: number;
   analysis: ScanAnalysis;
   createdAt: string; // ISO
+  /** Captures par zone (parcours guidé multi-zones). */
+  zones?: ScanZoneCapture[];
+  /** Conditions du scan (luminosité, distance) pour la cohérence dans le temps. */
+  conditions?: ScanConditions;
   /** Scan d'amorçage (historique de démo) — exclu du quota freemium. */
   isDemo?: boolean;
 }
