@@ -14,7 +14,7 @@ import { FullScreenLoader } from '@/components/common/FullScreenLoader';
  */
 export function RequireAuth() {
   const { user, loading, isConfigured, signInDemo } = useAuth();
-  const { profile } = useProfile();
+  const { profile, hydrated } = useProfile();
   const location = useLocation();
 
   useEffect(() => {
@@ -34,7 +34,12 @@ export function RequireAuth() {
     return <FullScreenLoader />;
   }
 
-  // Onboarding obligatoire tant qu'il n'est pas terminé.
+  // On attend le chargement du profil (cloud) avant de décider de l'onboarding,
+  // sinon un compte existant verrait brièvement le questionnaire au login.
+  if (!hydrated) return <FullScreenLoader />;
+
+  // Onboarding requis uniquement tant qu'il n'a jamais été terminé
+  // (un nouveau compte y arrive ; un compte existant le saute, données chargées).
   if (!profile.onboardingCompleted) {
     return <Navigate to="/onboarding" replace />;
   }
