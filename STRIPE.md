@@ -1,82 +1,98 @@
-# Abonnements Stripe — mise en place
+# Abonnements Stripe — passage en LIVE (paiements réels)
 
-Glow gère le Premium via **Stripe Checkout + webhook**, avec un backend en
-**Vercel Functions** (`/api/stripe/*`). Le statut Premium vit dans la table
-Supabase `subscriptions` (écrite uniquement par le webhook) → non falsifiable
-côté client.
+Glow gère le Premium via **Stripe Checkout + webhook**, backend en **Vercel
+Functions** (`/api/stripe/*`). Le statut Premium vit dans la table Supabase
+`subscriptions` (écrite uniquement par le webhook → non falsifiable côté client).
 
-> On commence en **mode TEST** (clés `sk_test_…`, cartes de test). Bascule en
-> live une fois le parcours validé.
+> ⚠️ **Mode LIVE = vrais paiements et vrais débits.** Tout est séparé du mode
+> test : clés (`sk_live_…`), prix, webhook (`whsec_…`) et portail sont distincts.
+> Active bien **Live mode** (toggle en haut du dashboard) avant chaque étape.
 
 ---
 
-## 1. Supabase — table des abonnements
-SQL Editor → New query → colle [`supabase/migration_subscriptions.sql`](supabase/migration_subscriptions.sql) → **Run**.
+## 0. Activer ton compte Stripe (obligatoire en live)
+Dashboard → **Activate / Complete account** : renseigne l'entreprise (ou
+auto-entrepreneur), l'adresse, ton **IBAN** (pour les virements) et l'identité.
+Tant que le compte n'est pas activé, les clés `sk_live_…` refusent les paiements.
 
-Récupère aussi la **clé service role** : Project Settings → API →
-`service_role` (secret). Elle ne sert QUE côté serveur (webhook).
+## 1. Supabase — table des abonnements (si pas déjà fait)
+SQL Editor → colle [`supabase/migration_subscriptions.sql`](supabase/migration_subscriptions.sql) → **Run**.
+Récupère la clé **service role** : Project Settings → API → `service_role`.
 
-## 2. Stripe — produit & prix (mode Test)
-1. [dashboard.stripe.com](https://dashboard.stripe.com) → active **Test mode** (toggle en haut).
-2. **Products → Add product** : « Glow Premium ».
-3. Ajoute **deux prix récurrents** :
-   - **Mensuel** : `9,99 €` / `month` → note l'ID `price_…` → `STRIPE_PRICE_MONTHLY`
-   - **Annuel** : `59,90 €` / `year` → note l'ID `price_…` → `STRIPE_PRICE_ANNUAL`
-4. Developers → **API keys** → copie la **Secret key** `sk_test_…` → `STRIPE_SECRET_KEY`.
+## 2. Stripe LIVE — produit, prix & webhook (script recommandé)
+Passe le dashboard en **Live mode**, puis Developers → API keys → copie la
+**Secret key** `sk_live_…`.
 
-## 3. Vercel — variables d'environnement
-Projet Vercel → Settings → **Environment Variables** (Production) :
+Le plus simple — lance le script avec ta clé **live** (elle reste sur ta machine) :
+```bash
+cd ~/Documents/NaturalMe
+STRIPE_SECRET_KEY=sk_live_xxx node scripts/setup-stripe.mjs
+```
+Le script affiche `Stripe LIVE ⚠️`, crée le produit **Glow Premium**, les 2 prix
+(**9,99 €/mois** et **59,90 €/an**) et l'**endpoint webhook**, puis imprime :
+```
+STRIPE_PRICE_MONTHLY=price_…
+STRIPE_PRICE_ANNUAL=price_…
+STRIPE_WEBHOOK_SECRET=whsec_…   (live)
+```
 
-| Name | Valeur |
+<details>
+<summary>…ou à la main dans le dashboard (Live mode)</summary>
+
+1. **Products → Add product** « Glow Premium » + 2 prix récurrents
+   `9,99 € / month` et `59,90 € / year` → note les `price_…`.
+2. **Developers → Webhooks → Add endpoint** : `https://glowritual.io/api/stripe/webhook`,
+   événements `checkout.session.completed`, `customer.subscription.updated`,
+   `customer.subscription.deleted` → copie le **Signing secret** `whsec_…`.
+</details>
+
+## 3. Vercel — variables d'environnement (Production)
+Projet Vercel → Settings → **Environment Variables** :
+
+| Name | Valeur (LIVE) |
 |---|---|
-| `STRIPE_SECRET_KEY` | `sk_test_…` |
-| `STRIPE_PRICE_MONTHLY` | `price_…` (mensuel) |
-| `STRIPE_PRICE_ANNUAL` | `price_…` (annuel) |
+| `STRIPE_SECRET_KEY` | `sk_live_…` |
+| `STRIPE_PRICE_MONTHLY` | `price_…` (mensuel, live) |
+| `STRIPE_PRICE_ANNUAL` | `price_…` (annuel, live) |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_…` (live) |
 | `SUPABASE_URL` | `https://gcgxefbwgxjmxuozowxx.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | clé `service_role` (étape 1) |
 | `SITE_URL` | `https://glowritual.io` |
-| `STRIPE_WEBHOOK_SECRET` | *(rempli à l'étape 4)* |
 
-> ⚠️ Ne mets JAMAIS `sk_test_…` ni la `service_role` dans une variable
-> `VITE_…` (celles-là sont envoyées au navigateur).
+> ⚠️ Ne mets JAMAIS `sk_live_…` ni la `service_role` dans une variable
+> `VITE_…` (celles-là sont envoyées au navigateur). Uniquement côté serveur.
 
-## 4. Stripe — webhook
-1. Developers → **Webhooks → Add endpoint**.
-2. URL : `https://glowritual.io/api/stripe/webhook`
-3. Événements à écouter :
-   - `checkout.session.completed`
-   - `customer.subscription.updated`
-   - `customer.subscription.deleted`
-4. Crée l'endpoint → copie le **Signing secret** `whsec_…` →
-   variable `STRIPE_WEBHOOK_SECRET` dans Vercel.
+## 4. Stripe — portail client (Live mode)
+Settings → **Billing → Customer portal** → active-le **en mode Live** (réglage
+distinct du mode test) : autorise l'annulation et le changement de formule.
 
-## 5. Stripe — portail client
-Settings → **Billing → Customer portal** → active-le (mode Test) et autorise
-l'annulation / le changement de formule. (Sert au bouton « Gérer mon abonnement ».)
+## 5. Redeploy
+Après ajout/maj des variables d'env, **redeploy** sur Vercel (les fonctions
+lisent les variables au démarrage).
 
-## 6. Redéploie
-Après avoir ajouté/changé des variables d'env, **redeploy** sur Vercel
-(les fonctions lisent les variables au démarrage).
-
-## 7. Test du parcours (carte de test)
-1. Sur le site : connecte-toi → **Pricing → Passer au Premium** (mensuel ou annuel).
-2. Sur Stripe Checkout, paie avec **`4242 4242 4242 4242`**, date future, CVC quelconque.
+## 6. Vérification en conditions réelles
+1. Sur `https://glowritual.io` : connecte-toi → **Pricing → Passer au Premium**.
+2. Paie avec une **vraie carte** (c'est un débit réel — tu peux **rembourser**
+   ensuite depuis Stripe → Payments, ou **résilier** via le portail).
 3. Retour sur `/pricing?checkout=success` → le webhook écrit dans `subscriptions`
    → ton statut passe **Premium**, les résultats se débloquent.
-4. **Profil → Gérer mon abonnement** ouvre le portail Stripe (résilier/changer).
-
-### Astuce debug webhook (optionnel)
-Avec la Stripe CLI : `stripe listen --forward-to https://glowritual.io/api/stripe/webhook`
-puis `stripe trigger checkout.session.completed`.
+4. **Profil → Gérer mon abonnement** ouvre le portail Stripe (résilier / changer).
+5. Contrôle : Stripe → **Developers → Webhooks** → l'événement doit être en
+   **200** (sinon vérifie `STRIPE_WEBHOOK_SECRET` et le redeploy).
 
 ---
 
-## Passage en live
-Refais les étapes 2→4 en **mode Live** (clés `sk_live_…`, nouveaux `price_…`,
-nouveau webhook `whsec_…`), mets à jour les variables Vercel, redeploy.
+## Bon à savoir en live
+- **Reçus & emails** : Stripe envoie automatiquement les reçus de paiement.
+- **Devise** : EUR (définie sur les prix).
+- **Remboursement / résiliation** : depuis le dashboard (Payments) ou le portail
+  client. La résiliation déclenche `customer.subscription.deleted` → retour au
+  plan gratuit automatiquement.
+- **TVA** (optionnel) : active **Stripe Tax** si tu dois collecter la TVA.
+- **Mentions légales / CGV** : recommandé d'ajouter des CGV et une politique de
+  remboursement avant d'encaisser des clients réels.
 
-## Récapitulatif des prix
-| Formule | Affichage | Débité |
-|---|---|---|
-| Mensuel | 9,99 €/mois | 9,99 € / mois |
-| Annuel | 4,99 €/mois (**−50 %**) | **59,90 € une fois / an** |
+## Revenir en test
+Relance le tout avec les clés `sk_test_…` (le script recrée prix + webhook en
+test) et repointe temporairement les variables Vercel — test et live coexistent
+sans se mélanger.
