@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type Stripe from 'stripe';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { stripe, supabaseAdmin } from '../_lib/clients';
+import { getStripe, supabaseAdmin } from '../_lib/clients';
 
 /**
  * POST /api/stripe/webhook
@@ -71,6 +71,13 @@ async function upsertSubscription(
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
+
+  let stripe: Stripe;
+  try {
+    stripe = getStripe();
+  } catch (e) {
+    return res.status(500).json({ error: (e as Error).message });
+  }
 
   const sig = req.headers['stripe-signature'];
   const secret = process.env.STRIPE_WEBHOOK_SECRET ?? '';

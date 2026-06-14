@@ -10,7 +10,20 @@ import type { VercelRequest } from '@vercel/node';
  * au navigateur. Ne jamais importer ce module depuis /src.
  */
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '');
+let _stripe: Stripe | null = null;
+
+/**
+ * Client Stripe construit à la demande. Construire avec une clé vide ferait
+ * planter la fonction au chargement (FUNCTION_INVOCATION_FAILED) → on diffère
+ * et on lève une erreur explicite si la clé manque.
+ */
+export function getStripe(): Stripe {
+  if (_stripe) return _stripe;
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error('STRIPE_SECRET_KEY manquante (variable d’env Vercel).');
+  _stripe = new Stripe(key);
+  return _stripe;
+}
 
 /** Client Supabase « service role » (bypass RLS) — pour le webhook. */
 export function supabaseAdmin(): SupabaseClient {
