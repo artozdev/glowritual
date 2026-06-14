@@ -201,6 +201,32 @@ export interface Database {
         >;
         Relationships: [];
       };
+      subscriptions: {
+        Row: {
+          user_id: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          status: string | null;
+          price_id: string | null;
+          plan_interval: string | null;
+          current_period_end: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          status?: string | null;
+          price_id?: string | null;
+          plan_interval?: string | null;
+          current_period_end?: string | null;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database['public']['Tables']['subscriptions']['Insert']
+        >;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

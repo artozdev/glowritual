@@ -13,6 +13,7 @@ import {
   demoUpdatePlan,
   type DemoAccount,
 } from '@/lib/demoAuth';
+import { fetchSubscription } from '@/lib/subscription';
 import type { Plan } from '@/types/database';
 
 export interface AuthUser {
@@ -36,8 +37,10 @@ interface AuthContextValue {
   ) => Promise<{ error: string | null; demo: boolean }>;
   /** Active une session d'invité (sans inscription). */
   signInDemo: () => void;
-  /** Bascule la session en Premium (stub Stripe). */
+  /** Bascule la session en Premium (mode démo uniquement). */
   upgradeDemo: () => void;
+  /** Recharge le statut d'abonnement depuis Supabase (après paiement Stripe). */
+  refreshSubscription: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -63,24 +66,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  /** Récupère le profil (plan) pour un utilisateur Supabase authentifié. */
+  /** Récupère le statut d'abonnement (Premium) pour un utilisateur authentifié. */
   const hydrateFromSupabase = useCallback(
     async (authUserId: string | null, email: string | null) => {
       if (!authUserId || !supabase) {
         setUser(null);
         return;
       }
-      let plan: Plan = 'free';
-      const { data } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', authUserId)
-        .maybeSingle();
-      if (data?.plan) plan = data.plan;
+      // Le Premium est lu dans `subscriptions` (écrite par le webhook Stripe,
+      // en lecture seule pour l'utilisateur) → statut non falsifiable.
+      const sub = await fetchSubscription(authUserId);
+      const plan: Plan = sub.premium ? 'premium' : 'free';
       setUser({ id: authUserId, email: email ?? '', plan, isDemo: false });
     },
     [],
   );
+
+  /** Recharge le statut d'abonnement de l'utilisateur courant. */
+  const refreshSubscription = useCallback(async () => {
+    if (!supabase) return;
+    const { data } = await supabase.auth.getSession();
+    await hydrateFromSupabase(
+      data.session?.user.id ?? null,
+      data.session?.user.email ?? null,
+    );
+  }, [hydrateFromSupabase]);
 
   useEffect(() => {
     // ── Mode démo : pas de backend, on restaure une éventuelle session locale.
@@ -171,6 +181,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const upgradeDemo = useCallback(() => {
+    // En mode réel (Supabase configuré), le Premium ne s'active QUE via Stripe.
+    if (isSupabaseConfigured) return;
     setUser((prev) => {
       if (!prev) return prev;
       const next = { ...prev, plan: 'premium' as Plan };
@@ -201,6 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetPassword,
         signInDemo,
         upgradeDemo,
+        refreshSubscription,
         signOut,
       }}
     >

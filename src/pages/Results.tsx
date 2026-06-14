@@ -15,9 +15,11 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CriterionRadar } from '@/components/results/CriterionRadar';
 import { InteractivePoint } from '@/components/results/InteractivePoint';
 import { PointDetailSheet } from '@/components/results/PointDetailSheet';
+import { LockedResults } from '@/components/results/LockedResults';
 import { CRITERION_ICON } from '@/components/results/criterionMeta';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
 import { useScanSession } from '@/hooks/useScanSession';
+import { useAuth } from '@/hooks/useAuth';
 import { scoreHeadline, formatDate, average } from '@/lib/utils';
 import { ZONE_STEPS, ZONE_META } from '@/lib/scanZones';
 import type { CriterionResult } from '@/types/domain';
@@ -26,9 +28,12 @@ export default function Results() {
   const { scanId } = useParams();
   const navigate = useNavigate();
   const { getScan, latest, hydrated } = useScanSession();
+  const { user, isConfigured } = useAuth();
   const [selected, setSelected] = useState<CriterionResult | null>(null);
 
   const scan = scanId ? getScan(scanId) : latest;
+  // Plan gratuit (mode réel) → résultats verrouillés derrière le Premium.
+  const locked = isConfigured && user?.plan !== 'premium';
 
   // Historique cloud en cours de chargement : on évite un faux écran « vide ».
   if (!scan && !hydrated) {
@@ -61,6 +66,9 @@ export default function Results() {
       </div>
     );
   }
+
+  // Plan gratuit : on ne rend PAS les scores dans le DOM, juste l'écran verrouillé.
+  if (locked) return <LockedResults scan={scan} />;
 
   const { analysis, overall, image, createdAt } = scan;
   const strengths = analysis.criteria.filter((c) => c.score >= 80).length;

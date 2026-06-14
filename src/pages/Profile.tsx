@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useScanSession } from '@/hooks/useScanSession';
 import { deleteAllUserData } from '@/lib/userData';
+import { openBillingPortal } from '@/lib/stripeClient';
 
 export default function Profile() {
   const { user, signOut, isConfigured } = useAuth();
@@ -29,6 +30,19 @@ export default function Profile() {
 
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [portalBusy, setPortalBusy] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
+
+  async function handleManageSubscription() {
+    setPortalError(null);
+    setPortalBusy(true);
+    try {
+      await openBillingPortal();
+    } catch (e) {
+      setPortalError((e as Error).message || 'Portail indisponible pour le moment.');
+      setPortalBusy(false);
+    }
+  }
 
   async function handleSignOut() {
     await signOut();
@@ -120,7 +134,29 @@ export default function Profile() {
       </Link>
 
       {/* Abonnement */}
-      {!isPremium && (
+      {isPremium ? (
+        <Card className="mt-4 p-5">
+          <h2 className="flex items-center gap-2 font-semibold text-sage-900">
+            <Crown className="h-4 w-4 text-gold" />
+            Mon abonnement
+          </h2>
+          <p className="mt-1.5 text-sm text-sage-600">
+            Vous êtes Premium ✨ Gérez votre formule, votre moyen de paiement ou
+            résiliez via le portail sécurisé Stripe.
+          </p>
+          <Button
+            variant="outline"
+            className="mt-4"
+            onClick={handleManageSubscription}
+            disabled={portalBusy}
+          >
+            {portalBusy ? 'Ouverture…' : 'Gérer mon abonnement'}
+          </Button>
+          {portalError && (
+            <p className="mt-2 text-xs text-red-500">{portalError}</p>
+          )}
+        </Card>
+      ) : (
         <Card className="mt-4 overflow-hidden">
           <div className="flex items-center justify-between gap-4 bg-sage-gradient p-5">
             <div>
@@ -129,7 +165,7 @@ export default function Profile() {
                 Passez en Premium
               </p>
               <p className="mt-1 text-sm text-sage-600">
-                Routines illimitées, suivi détaillé et comparaison avant/après.
+                Résultats complets, routines illimitées et suivi avant/après.
               </p>
             </div>
             <Link to="/pricing">

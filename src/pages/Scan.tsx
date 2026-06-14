@@ -20,7 +20,7 @@ const FREE_SCAN_LIMIT = 1;
 export default function Scan() {
   const navigate = useNavigate();
   const { saveScan, realScanCount } = useScanSession();
-  const { user, upgradeDemo } = useAuth();
+  const { user, upgradeDemo, isConfigured } = useAuth();
   const { profile } = useProfile();
 
   const [started, setStarted] = useState(false);
@@ -184,17 +184,19 @@ export default function Scan() {
               Découvrir Premium
             </Button>
           </Link>
-          <button
-            type="button"
-            onClick={() => {
-              upgradeDemo();
-              setShowUpgrade(false);
-            }}
-            className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-sage-500 hover:text-sage-700"
-          >
-            <Crown className="h-4 w-4" />
-            Activer Premium (démo)
-          </button>
+          {!isConfigured && (
+            <button
+              type="button"
+              onClick={() => {
+                upgradeDemo();
+                setShowUpgrade(false);
+              }}
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-sage-500 hover:text-sage-700"
+            >
+              <Crown className="h-4 w-4" />
+              Activer Premium (démo)
+            </button>
+          )}
         </div>
       </Sheet>
     </div>
