@@ -25,10 +25,19 @@ import type { CriterionResult } from '@/types/domain';
 export default function Results() {
   const { scanId } = useParams();
   const navigate = useNavigate();
-  const { getScan, latest } = useScanSession();
+  const { getScan, latest, hydrated } = useScanSession();
   const [selected, setSelected] = useState<CriterionResult | null>(null);
 
   const scan = scanId ? getScan(scanId) : latest;
+
+  // Historique cloud en cours de chargement : on évite un faux écran « vide ».
+  if (!scan && !hydrated) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <span className="h-8 w-8 animate-spin rounded-full border-2 border-sage-200 border-t-sage-500" />
+      </div>
+    );
+  }
 
   // Aucun scan disponible → invitation à scanner.
   if (!scan) {

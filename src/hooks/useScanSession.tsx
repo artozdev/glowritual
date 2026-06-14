@@ -4,17 +4,29 @@ import {
   useState,
   useCallback,
   useMemo,
+  useEffect,
   type ReactNode,
 } from 'react';
 import type { StoredScan } from '@/types/domain';
 import { buildDemoHistory } from '@/data/demo';
+import { useAuth } from '@/hooks/useAuth';
+import { isSupabaseConfigured } from '@/lib/supabase';
+import {
+  fetchScans,
+  insertScan,
+  deleteScan,
+  clearScans,
+} from '@/lib/scanSync';
 
 /**
- * Store de session des scans (mode démo).
+ * Store de session des scans.
  *
- * Persiste l'historique en localStorage. À l'étape 5, ce store sera
- * remplaçable par des requêtes Supabase (table `scans` + storage), sans
- * changer l'API consommée par les écrans.
+ * - Supabase configuré : historique chargé depuis le cloud au login et
+ *   synchronisé (insert/delete). Les photos vivent dans le bucket « scans ».
+ * - Mode démo (pas de backend) : persistance localStorage + historique d'amorçage.
+ *
+ * Les écritures cloud sont « best-effort » : l'UI est mise à jour immédiatement
+ * (optimiste) et n'est jamais bloquée par une erreur réseau.
  */
 
 const STORAGE_KEY = 'naturalme.scans.v1';
@@ -25,6 +37,8 @@ interface ScanSessionValue {
   latest: StoredScan | null;
   /** Nombre de scans réels (hors historique de démo) — quota freemium. */
   realScanCount: number;
+  /** Vrai quand l'historique a fini de charger (local ou cloud). */
+  hydrated: boolean;
   getScan: (id: string) => StoredScan | undefined;
   /** Enregistre un scan et le place en tête d'historique. */
   saveScan: (scan: StoredScan) => void;
@@ -36,14 +50,14 @@ interface ScanSessionValue {
 
 const ScanSessionContext = createContext<ScanSessionValue | undefined>(undefined);
 
-function loadHistory(): StoredScan[] {
+function loadLocal(): StoredScan[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as StoredScan[];
   } catch {
     /* ignore */
   }
-  // Premier lancement : on amorce avec l'historique de démonstration.
+  // Premier lancement (mode démo) : on amorce avec un historique de démonstration.
   const demo = buildDemoHistory();
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
@@ -53,7 +67,7 @@ function loadHistory(): StoredScan[] {
   return demo;
 }
 
-function persist(history: StoredScan[]) {
+function persistLocal(history: StoredScan[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
   } catch {
@@ -61,32 +75,74 @@ function persist(history: StoredScan[]) {
   }
 }
 
-export function ScanSessionProvider({ children }: { children: ReactNode }) {
-  const [history, setHistory] = useState<StoredScan[]>(() => loadHistory());
+const byDateDesc = (a: StoredScan, b: StoredScan) =>
+  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
-  const update = useCallback((next: StoredScan[]) => {
-    setHistory(next);
-    persist(next);
-  }, []);
+export function ScanSessionProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const userId = user && !user.isDemo ? user.id : null;
+  const cloud = isSupabaseConfigured && !!userId;
+
+  const [history, setHistory] = useState<StoredScan[]>(() =>
+    isSupabaseConfigured ? [] : loadLocal(),
+  );
+  const [hydrated, setHydrated] = useState(!isSupabaseConfigured);
+
+  // Charge l'historique au changement d'utilisateur (login / logout).
+  useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setHistory(loadLocal());
+      setHydrated(true);
+      return;
+    }
+    if (!userId) {
+      setHistory([]);
+      setHydrated(false);
+      return;
+    }
+    let cancelled = false;
+    setHydrated(false);
+    void (async () => {
+      const cloudScans = await fetchScans(userId);
+      if (cancelled) return;
+      setHistory(cloudScans.sort(byDateDesc));
+      setHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   const saveScan = useCallback(
     (scan: StoredScan) => {
-      update(
-        [scan, ...history].sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        ),
-      );
+      // Optimiste : on garde la version locale (dataURLs) pour l'affichage immédiat.
+      setHistory((prev) => {
+        const next = [scan, ...prev].sort(byDateDesc);
+        if (!cloud) persistLocal(next);
+        return next;
+      });
+      if (cloud && userId) void insertScan(userId, scan);
     },
-    [history, update],
+    [cloud, userId],
   );
 
   const removeScan = useCallback(
-    (id: string) => update(history.filter((s) => s.id !== id)),
-    [history, update],
+    (id: string) => {
+      setHistory((prev) => {
+        const next = prev.filter((s) => s.id !== id);
+        if (!cloud) persistLocal(next);
+        return next;
+      });
+      if (cloud && userId) void deleteScan(userId, id);
+    },
+    [cloud, userId],
   );
 
-  const clearAll = useCallback(() => update([]), [update]);
+  const clearAll = useCallback(() => {
+    setHistory([]);
+    if (cloud && userId) void clearScans(userId);
+    else persistLocal([]);
+  }, [cloud, userId]);
 
   const getScan = useCallback(
     (id: string) => history.find((s) => s.id === id),
@@ -94,20 +150,18 @@ export function ScanSessionProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<ScanSessionValue>(() => {
-    const sorted = [...history].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    const sorted = [...history].sort(byDateDesc);
     return {
       history: sorted,
       latest: sorted[0] ?? null,
       realScanCount: sorted.filter((s) => !s.isDemo).length,
+      hydrated,
       getScan,
       saveScan,
       removeScan,
       clearAll,
     };
-  }, [history, getScan, saveScan, removeScan, clearAll]);
+  }, [history, hydrated, getScan, saveScan, removeScan, clearAll]);
 
   return (
     <ScanSessionContext.Provider value={value}>

@@ -9,6 +9,15 @@ export type Plan = 'free' | 'premium';
 export type ScanKind = 'face' | 'body';
 export type RoutinePeriod = 'morning' | 'evening' | 'weekly';
 
+/** Valeur JSON arbitraire (colonnes jsonb). */
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 export interface Database {
   public: {
     Tables: {
@@ -73,6 +82,9 @@ export interface Database {
           image_path: string | null;
           overall_score: number | null;
           created_at: string;
+          is_demo: boolean;
+          /** Payload complet du scan (analyse, zones, conditions, seed). */
+          data: Json | null;
         };
         Insert: {
           id?: string;
@@ -81,6 +93,8 @@ export interface Database {
           image_path?: string | null;
           overall_score?: number | null;
           created_at?: string;
+          is_demo?: boolean;
+          data?: Json | null;
         };
         Update: Partial<Database['public']['Tables']['scans']['Insert']>;
         Relationships: [];
@@ -168,6 +182,22 @@ export interface Database {
         };
         Update: Partial<
           Database['public']['Tables']['affiliate_clicks']['Insert']
+        >;
+        Relationships: [];
+      };
+      routine_completions: {
+        Row: {
+          user_id: string;
+          task_id: string;
+          completed_at: string;
+        };
+        Insert: {
+          user_id: string;
+          task_id: string;
+          completed_at?: string;
+        };
+        Update: Partial<
+          Database['public']['Tables']['routine_completions']['Insert']
         >;
         Relationships: [];
       };
