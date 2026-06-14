@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type Stripe from 'stripe';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getStripe, supabaseAdmin } from '../_lib/clients';
+import { getStripe, supabaseAdmin } from '../_lib/clients.js';
 
 /**
  * POST /api/stripe/webhook

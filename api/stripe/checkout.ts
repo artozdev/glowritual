@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getStripe, supabaseAdmin, getUser, priceFor, siteUrl } from '../_lib/clients';
+import { getStripe, supabaseAdmin, getUser, priceFor, siteUrl } from '../_lib/clients.js';
 
 /**
  * POST /api/stripe/checkout  { interval: 'monthly' | 'annual' }
