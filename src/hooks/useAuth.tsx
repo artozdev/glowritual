@@ -7,12 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import {
-  demoSignUp,
-  demoSignIn,
-  demoUpdatePlan,
-  type DemoAccount,
-} from '@/lib/demoAuth';
+import { demoSignUp, demoSignIn, type DemoAccount } from '@/lib/demoAuth';
 import { fetchSubscription } from '@/lib/subscription';
 import type { Plan } from '@/types/database';
 
@@ -37,8 +32,6 @@ interface AuthContextValue {
   ) => Promise<{ error: string | null; demo: boolean }>;
   /** Active une session d'invité (sans inscription). */
   signInDemo: () => void;
-  /** Bascule la session en Premium (mode démo uniquement). */
-  upgradeDemo: () => void;
   /** Recharge le statut d'abonnement depuis Supabase (après paiement Stripe). */
   refreshSubscription: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -180,20 +173,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message ?? null, demo: false };
   }, []);
 
-  const upgradeDemo = useCallback(() => {
-    // En mode réel (Supabase configuré), le Premium ne s'active QUE via Stripe.
-    if (isSupabaseConfigured) return;
-    setUser((prev) => {
-      if (!prev) return prev;
-      const next = { ...prev, plan: 'premium' as Plan };
-      if (prev.isDemo) {
-        localStorage.setItem(DEMO_KEY, JSON.stringify(next));
-        if (prev.id !== 'demo-guest') demoUpdatePlan(prev.id, 'premium');
-      }
-      return next;
-    });
-  }, []);
-
   const signOut = useCallback(async () => {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
@@ -212,7 +191,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signIn,
         resetPassword,
         signInDemo,
-        upgradeDemo,
         refreshSubscription,
         signOut,
       }}
