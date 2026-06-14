@@ -45,6 +45,6 @@ export function siteUrl(req: VercelRequest): string {
   return (
     process.env.SITE_URL ||
     (req.headers.origin as string) ||
-    'https://glow-k429.vercel.app'
+    'https://glowritual.io'
   );
 }

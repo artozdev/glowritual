@@ -16,7 +16,7 @@ Pour la rendre publique : (1) configurer Supabase, (2) déployer le site.
    Pour des inscriptions instantanées, tu peux désactiver « Confirm email ».
 4. **URLs autorisées** : Authentication → URL Configuration →
    ajoute l'URL de ton site déployé dans **Site URL** + **Redirect URLs**
-   (ex. `https://glow.vercel.app`).
+   (ex. `https://glowritual.io`).
 5. **Clés** : Project Settings → **API** →
    - **Project URL** → `VITE_SUPABASE_URL`
    - clé **Publishable / anon** (`sb_publishable_…` ou JWT `eyJ…`) → `VITE_SUPABASE_ANON_KEY`
@@ -68,4 +68,4 @@ npx vercel --prod      # ou : npx netlify deploy --prod --dir=dist
 - Crée un compte sur le site en ligne → vérifie qu'une ligne apparaît dans
   `auth.users` **et** `public.profiles`.
 - Mets à jour **Site URL / Redirect URLs** dans Supabase avec l'URL finale.
-- (Optionnel) domaine personnalisé `glow.app` via l'hébergeur.
+- (Optionnel) domaine personnalisé `glowritual.io` (déjà configuré) via l'hébergeur.

@@ -70,7 +70,7 @@ async function main() {
   const [monthly, annual] = [await ensurePrice(productId, PLANS[0]), await ensurePrice(productId, PLANS[1])];
 
   // Webhook : créé s'il n'existe pas (le secret whsec_ n'est révélé qu'à la création).
-  const site = process.env.SITE_URL || 'https://glow-k429.vercel.app';
+  const site = process.env.SITE_URL || 'https://glowritual.io';
   const url = `${site}/api/stripe/webhook`;
   const events = [
     'checkout.session.completed',

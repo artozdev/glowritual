@@ -34,7 +34,7 @@ Projet Vercel → Settings → **Environment Variables** (Production) :
 | `STRIPE_PRICE_ANNUAL` | `price_…` (annuel) |
 | `SUPABASE_URL` | `https://gcgxefbwgxjmxuozowxx.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | clé `service_role` (étape 1) |
-| `SITE_URL` | `https://glow-k429.vercel.app` |
+| `SITE_URL` | `https://glowritual.io` |
 | `STRIPE_WEBHOOK_SECRET` | *(rempli à l'étape 4)* |
 
 > ⚠️ Ne mets JAMAIS `sk_test_…` ni la `service_role` dans une variable
@@ -42,7 +42,7 @@ Projet Vercel → Settings → **Environment Variables** (Production) :
 
 ## 4. Stripe — webhook
 1. Developers → **Webhooks → Add endpoint**.
-2. URL : `https://glow-k429.vercel.app/api/stripe/webhook`
+2. URL : `https://glowritual.io/api/stripe/webhook`
 3. Événements à écouter :
    - `checkout.session.completed`
    - `customer.subscription.updated`
@@ -66,7 +66,7 @@ Après avoir ajouté/changé des variables d'env, **redeploy** sur Vercel
 4. **Profil → Gérer mon abonnement** ouvre le portail Stripe (résilier/changer).
 
 ### Astuce debug webhook (optionnel)
-Avec la Stripe CLI : `stripe listen --forward-to https://glow-k429.vercel.app/api/stripe/webhook`
+Avec la Stripe CLI : `stripe listen --forward-to https://glowritual.io/api/stripe/webhook`
 puis `stripe trigger checkout.session.completed`.
 
 ---
