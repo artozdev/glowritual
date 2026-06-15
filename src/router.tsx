@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { RequireAuth } from '@/components/layout/RequireAuth';
+import { PremiumOnly } from '@/components/premium/PremiumOnly';
 import { FullScreenLoader } from '@/components/common/FullScreenLoader';
 import Landing from '@/pages/Landing';
 
@@ -42,13 +43,37 @@ export const router = createBrowserRouter([
   {
     element: <RequireAuth />,
     children: [
+      // Gratuit : le scan (l'« aha moment ») + le teaser de résultats.
       { path: '/scan', element: <Scan /> },
       { path: '/results/:scanId?', element: <Results /> },
-      { path: '/routine', element: <Routine /> },
-      { path: '/progress', element: <Progress /> },
+      // Réservé au Premium (écran d'upgrade en gratuit, vérifié côté serveur).
+      {
+        path: '/routine',
+        element: (
+          <PremiumOnly feature="routine">
+            <Routine />
+          </PremiumOnly>
+        ),
+      },
+      {
+        path: '/progress',
+        element: (
+          <PremiumOnly feature="progress">
+            <Progress />
+          </PremiumOnly>
+        ),
+      },
+      {
+        path: '/ambassador',
+        element: (
+          <PremiumOnly feature="ambassador">
+            <Ambassador />
+          </PremiumOnly>
+        ),
+      },
+      // Toujours accessibles (gestion du compte, passage au Premium).
       { path: '/profile', element: <Profile /> },
       { path: '/pricing', element: <Pricing /> },
-      { path: '/ambassador', element: <Ambassador /> },
     ],
   },
 ]);
