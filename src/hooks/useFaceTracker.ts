@@ -64,7 +64,11 @@ export function useFaceTracker(
 
         if (lm && lm.length) {
           const geo = faceGeometry(lm);
-          const { brightness, sharpness } = sampleRegion(video, sampler, geo.box);
+          const { brightness, sharpness, evenness } = sampleRegion(
+            video,
+            sampler,
+            geo.box,
+          );
           if (prevCx != null && prevCy != null) {
             const d = Math.hypot(geo.box.cx - prevCx, geo.box.cy - prevCy);
             ema = ema * 0.7 + d * 0.3;
@@ -79,6 +83,7 @@ export function useFaceTracker(
             yaw: geo.yaw,
             brightness,
             sharpness,
+            evenness,
             stable: ema < STABLE_EMA,
             landmarks: lm,
           };

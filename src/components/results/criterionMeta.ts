@@ -8,6 +8,12 @@ import {
   PersonStanding,
   Dumbbell,
   Waves,
+  CircleDot,
+  Eraser,
+  Grid2x2,
+  Wind,
+  Diamond,
+  SunMedium,
   type LucideIcon,
 } from 'lucide-react';
 import type { CriterionId } from '@/types/domain';
@@ -16,8 +22,14 @@ import type { CriterionId } from '@/types/domain';
 export const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
   hydration: Droplets,
   glow: Sun,
+  imperfections: CircleDot,
+  post_acne_marks: Eraser,
+  skin_texture: Grid2x2,
+  pigmentation: Sparkles,
+  wrinkles: Wind,
+  firmness: Diamond,
   dark_circles: Eye,
-  skin_texture: Sparkles,
+  shine: SunMedium,
   lip_brow_care: Smile,
   symmetry: Scale,
   posture: PersonStanding,

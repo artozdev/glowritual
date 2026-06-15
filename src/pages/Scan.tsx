@@ -38,7 +38,13 @@ export default function Scan() {
     const seed = landmarks
       ? seedFromLandmarks(landmarks)
       : Math.floor(Math.random() * 1_000_000_000);
-    const analysis = analyze({ kind: 'face', seed, landmarks, profile });
+    const analysis = analyze({
+      kind: 'face',
+      seed,
+      landmarks,
+      zones: result?.zones ?? null,
+      profile,
+    });
 
     const scan: StoredScan = {
       id: uid(),

@@ -36,6 +36,8 @@ export interface FaceMetrics {
   brightness: number;
   /** Netteté / mise au point (0..1, plus haut = plus net). */
   sharpness: number;
+  /** Homogénéité du teint (0..1, plus haut = plus uniforme). */
+  evenness: number;
   /** Visage stable (peu de mouvement entre deux images). */
   stable: boolean;
   landmarks: NormalizedPoint[] | null;
@@ -49,6 +51,7 @@ export const EMPTY_METRICS: FaceMetrics = {
   yaw: 0,
   brightness: 0.5,
   sharpness: 0.5,
+  evenness: 0.7,
   stable: false,
   landmarks: null,
 };
@@ -135,27 +138,28 @@ export function sampleRegion(
   video: HTMLVideoElement,
   canvas: HTMLCanvasElement,
   box?: Box,
-): { brightness: number; sharpness: number } {
+): { brightness: number; sharpness: number; evenness: number } {
+  const FALLBACK = { brightness: 0.5, sharpness: 0.5, evenness: 0.7 };
   const W = 48;
   const H = 48;
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  if (!ctx || !video.videoWidth) return { brightness: 0.5, sharpness: 0.5 };
+  if (!ctx || !video.videoWidth) return FALLBACK;
   try {
     if (box) {
       const sx = box.minX * video.videoWidth;
       const sy = box.minY * video.videoHeight;
       const sw = box.w * video.videoWidth;
       const sh = box.h * video.videoHeight;
-      if (sw < 2 || sh < 2) return { brightness: 0.5, sharpness: 0.5 };
+      if (sw < 2 || sh < 2) return FALLBACK;
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
     } else {
       ctx.drawImage(video, 0, 0, W, H);
     }
     const { data } = ctx.getImageData(0, 0, W, H);
 
-    // Luma par pixel (réutilisée pour la luminosité et le gradient).
+    // Luma par pixel (réutilisée pour luminosité, gradient et homogénéité).
     const luma = new Float32Array(W * H);
     let sum = 0;
     for (let p = 0; p < W * H; p++) {
@@ -167,9 +171,10 @@ export function sampleRegion(
       luma[p] = y;
       sum += y;
     }
-    const brightness = sum / (W * H) / 255;
+    const mean = sum / (W * H);
+    const brightness = mean / 255;
 
-    // Gradient (voisins droite + bas) → mesure de mise au point.
+    // Gradient (voisins droite + bas) → mesure de mise au point / texture.
     let acc = 0;
     let count = 0;
     for (let y = 0; y < H - 1; y++) {
@@ -184,9 +189,15 @@ export function sampleRegion(
     const grad = count ? Math.sqrt(acc / count) / 255 : 0; // ~0..0.15
     const sharpness = clamp01(grad / 0.08); // calibré : 0.08 ≈ net
 
-    return { brightness, sharpness };
+    // Homogénéité du teint : faible écart-type de luma = teint uniforme.
+    let varSum = 0;
+    for (let p = 0; p < W * H; p++) varSum += (luma[p]! - mean) ** 2;
+    const std = Math.sqrt(varSum / (W * H)); // 0..~80
+    const evenness = clamp01(1 - std / 70);
+
+    return { brightness, sharpness, evenness };
   } catch {
-    return { brightness: 0.5, sharpness: 0.5 };
+    return FALLBACK;
   }
 }
 

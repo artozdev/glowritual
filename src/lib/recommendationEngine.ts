@@ -30,6 +30,16 @@ const NEED_PHRASE: Record<ProductNeed, string> = {
   radiance: 'l’éclat de votre teint',
   eye_care: 'votre regard',
   skin_renewal: 'la texture de votre peau',
+  imperfections: 'la netteté de votre peau',
+  post_acne_marks: 'l’estompage des marques',
+  pigmentation: 'l’uniformité de votre teint',
+  anti_aging: 'la fermeté et les signes de l’âge',
+  mattifying: 'l’équilibre de votre zone T',
+  sun_protection: 'la protection de votre peau',
+  contour: 'le contour de votre visage',
+  hair: 'vos cheveux et cils',
+  beard: 'votre barbe',
+  wellness: 'votre bien-être de l’intérieur',
   lip_brow_care: 'le soin de vos lèvres et sourcils',
   firmness: 'la fermeté de votre visage',
   body_firmness: 'le tonus de votre corps',
@@ -192,6 +202,43 @@ export function recommendProductForNeed(
     }))
     .sort((a, b) => b.score - a.score);
   return ranked[0]?.product ?? null;
+}
+
+/**
+ * Propose une « routine globale » (solution complète) si elle couvre l'un des
+ * besoins détectés (critères non sains). Renvoie `null` sinon.
+ */
+export function recommendRoutine(
+  criteria: CriterionResult[],
+  profile: UserProfile,
+  provider: ProductProvider = getProductProvider(),
+): ProductRecommendation | null {
+  const needs = criteria
+    .filter((c) => c.severity !== 'healthy')
+    .sort((a, b) => a.score - b.score)
+    .map((c) => c.need);
+  const seen = new Set<ProductNeed>();
+  for (const need of needs) {
+    if (seen.has(need)) continue;
+    seen.add(need);
+    const routine = provider
+      .byNeed(need)
+      .find(
+        (p) =>
+          p.isRoutine &&
+          p.rating >= MIN_RATING &&
+          !hasAllergyConflict(p, profile),
+      );
+    if (routine) {
+      return {
+        product: routine,
+        matchScore: 100,
+        reason:
+          'Une routine complète qui agit sur plusieurs de vos besoins à la fois, de l’intérieur comme en surface — idéale pour démarrer simplement.',
+      };
+    }
+  }
+  return null;
 }
 
 /** Recommande jusqu'à `max` produits pour un critère (du meilleur au moins bon). */
