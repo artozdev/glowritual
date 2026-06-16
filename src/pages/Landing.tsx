@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ShieldCheck,
   Sparkles,
-  BadgeCheck,
-  CalendarCheck,
   Instagram,
   Twitter,
   Facebook,
@@ -17,6 +14,7 @@ import { StarRating } from '@/components/landing/StarRating';
 import { AvatarStack } from '@/components/landing/AvatarStack';
 import { HeroShowcase } from '@/components/landing/HeroShowcase';
 import { FeatureExplorer } from '@/components/landing/FeatureExplorer';
+import { ImpactSection } from '@/components/landing/ImpactSection';
 import { BeforeAfterSlider } from '@/components/landing/BeforeAfterSlider';
 import {
   TestimonialsCarousel,
@@ -25,29 +23,6 @@ import {
 import { Laurels } from '@/components/landing/Laurels';
 
 /* ── Données (placeholders clairement remplaçables) ─────────────── */
-
-const ADVANTAGES = [
-  {
-    icon: ShieldCheck,
-    title: '100 % naturel, zéro risque',
-    text: 'Aucune chirurgie, aucune injection, aucune substance douteuse. Que du sain, validé pour ta peau.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Une précision bluffante',
-    text: 'Notre IA détecte ce que l’œil ne voit pas et te donne des conseils vraiment personnalisés.',
-  },
-  {
-    icon: BadgeCheck,
-    title: 'Des produits dignes de confiance',
-    text: 'Chaque recommandation est filtrée pour exclure les ingrédients nocifs. On ne te propose que le meilleur.',
-  },
-  {
-    icon: CalendarCheck,
-    title: 'Une routine clé en main',
-    text: 'Plus besoin de chercher. Glow te dit quoi faire, quand, et s’adapte à toi à chaque scan.',
-  },
-];
 
 const TESTIMONIALS: Testimonial[] = [
   {
@@ -91,7 +66,7 @@ export default function Landing() {
       <Hero />
       <BeforeAfterSection />
       <FeatureExplorer />
-      <AdvantagesSection />
+      <ImpactSection />
       <TestimonialsSection />
       <FinalCta />
       <Footer />
@@ -134,10 +109,12 @@ function Header() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* Halos doux */}
+      {/* Halos doux + voile dégradé */}
       <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-x-0 top-0 h-[460px] bg-gradient-to-b from-mint/20 via-sand/40 to-transparent" />
         <div className="absolute -left-24 top-0 h-80 w-80 rounded-full bg-mint/40 blur-3xl" />
         <div className="absolute -right-20 top-32 h-72 w-72 rounded-full bg-gold/20 blur-3xl" />
+        <div className="absolute left-1/3 top-48 h-64 w-64 rounded-full bg-mint-deep/15 blur-3xl" />
       </div>
 
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 pb-12 pt-12 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:pt-20">
@@ -148,7 +125,7 @@ function Hero() {
               <AvatarStack />
               <span className="flex items-center gap-1.5">
                 <StarRating size={13} />
-                Adoré par +50 000 utilisateurs
+                Adoré par +100 utilisateurs
               </span>
             </span>
           </ScrollReveal>
@@ -157,7 +134,9 @@ function Hero() {
             <h1 className="mt-6 text-5xl font-bold leading-[0.98] tracking-tight text-forest sm:text-6xl lg:text-7xl">
               Révèle ton glow
               <br />
-              <span className="text-forest-light">naturel.</span>
+              <span className="bg-gradient-to-r from-forest-light via-mint-deep to-forest-light bg-clip-text text-transparent">
+                naturel.
+              </span>
             </h1>
           </ScrollReveal>
 
@@ -242,38 +221,6 @@ function BeforeAfterSection() {
   );
 }
 
-/* ── 5. Pourquoi choisir Glow ───────────────────────────────────── */
-
-function AdvantagesSection() {
-  return (
-    <section id="avantages" className="bg-sand py-20 sm:py-28">
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <ScrollReveal className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-bold tracking-tight text-forest sm:text-5xl">
-            La beauté naturelle, guidée par l’IA.
-          </h2>
-        </ScrollReveal>
-
-        <div className="mt-12 grid gap-5 sm:grid-cols-2">
-          {ADVANTAGES.map(({ icon: Icon, title, text }, i) => (
-            <ScrollReveal key={title} delay={i * 0.05}>
-              <div className="flex h-full gap-4 rounded-3xl bg-white p-6 shadow-soft">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-forest">
-                  <Icon className="h-6 w-6 text-mint" />
-                </span>
-                <div>
-                  <h3 className="text-lg font-bold text-forest">{title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-forest/70">{text}</p>
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ── 6. Témoignages ─────────────────────────────────────────────── */
 
 function TestimonialsSection() {
@@ -294,12 +241,14 @@ function TestimonialsSection() {
         <ScrollReveal delay={0.1} className="mt-16">
           <div className="mx-auto max-w-md text-center">
             <Laurels>
-              <p className="text-5xl font-bold text-forest">4.9/5</p>
               <div className="mt-1 flex justify-center">
-                <StarRating size={16} />
+                <StarRating size={18} />
               </div>
-              <p className="mt-2 text-sm font-semibold text-forest-light">
-                +10 000 avis 5 étoiles
+              <p className="mt-3 text-2xl font-bold text-forest">
+                Déjà adopté par +100 utilisateurs
+              </p>
+              <p className="mt-1 text-sm font-semibold text-forest-light">
+                au lancement de Glow
               </p>
             </Laurels>
             <p className="mt-4 text-sm text-forest/60">
