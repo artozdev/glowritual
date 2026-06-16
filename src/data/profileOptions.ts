@@ -8,6 +8,7 @@ import type {
   Goal,
   HydrationBand,
   ProductPref,
+  ProductGenderPref,
   RoutineTime,
   ScanReminder,
   SkinType,
@@ -59,6 +60,14 @@ export const GENDER_OPTIONS: Option<Gender>[] = [
   { value: 'male', label: 'Homme', emoji: '♂️' },
   { value: 'other', label: 'Autre', emoji: '🌈' },
   { value: 'prefer_not', label: 'Préfère ne pas dire', emoji: '🤍' },
+];
+
+/** Préférence d'affichage des produits selon le genre (modifiable). */
+export const PRODUCT_GENDER_OPTIONS: Option<ProductGenderPref>[] = [
+  { value: 'female', label: 'Femme' },
+  { value: 'male', label: 'Homme' },
+  { value: 'all', label: 'Mixte' },
+  { value: 'unisex', label: 'Neutres' },
 ];
 
 export const SKIN_TYPE_OPTIONS: Option<SkinType>[] = [

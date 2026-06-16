@@ -614,7 +614,7 @@ export const PRODUCTS: Product[] = [
       { name: 'Huile de ricin', benefit: 'fortifie, apporte volume et longueur aux cils' },
     ],
     application: 'Le soir, au pinceau sur cils et sourcils.',
-    gender: 'all',
+    gender: 'female',
     vegan: true,
   },
   {
