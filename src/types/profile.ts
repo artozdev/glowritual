@@ -43,6 +43,14 @@ export type ProductPref = 'bio_only' | 'whatever' | 'sensitive';
 export type Budget = 'low' | 'mid' | 'high';
 /** Fréquence de rappel de scan. */
 export type ScanReminder = 'off' | 'daily' | 'weekly';
+/**
+ * Préférence d'affichage des produits selon le genre.
+ *  female  → produits femme + universels
+ *  male    → produits homme + universels
+ *  all     → tout (mixte)
+ *  unisex  → uniquement les produits universels
+ */
+export type ProductGenderPref = 'female' | 'male' | 'all' | 'unisex';
 
 export interface UserProfile {
   /** Vrai une fois l'onboarding terminé. */
@@ -69,6 +77,22 @@ export interface UserProfile {
   budget: Budget;
   /** Fréquence de rappel de scan (« off » par défaut). */
   scanReminder: ScanReminder;
+  /**
+   * Préférence d'affichage produits (genre). Modifiable dans les paramètres.
+   * Absent → dérivé du genre d'onboarding (femme/homme → leur catalogue,
+   * autre/non précisé → universels).
+   */
+  productGenderPref?: ProductGenderPref;
+}
+
+/** Filtre genre effectif (préférence explicite, sinon dérivé du genre). */
+export function effectiveProductGender(
+  profile: Pick<UserProfile, 'gender' | 'productGenderPref'>,
+): ProductGenderPref {
+  if (profile.productGenderPref) return profile.productGenderPref;
+  if (profile.gender === 'female') return 'female';
+  if (profile.gender === 'male') return 'male';
+  return 'unisex'; // autre / préfère ne pas dire → universels par défaut
 }
 
 /** Vrai si l'utilisateur est mineur (ton adapté, pas d'objectif corporel). */

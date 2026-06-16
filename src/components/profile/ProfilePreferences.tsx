@@ -7,9 +7,11 @@ import { useProfile } from '@/hooks/useProfile';
 import {
   SKIN_TYPE_OPTIONS,
   PRODUCT_PREF_OPTIONS,
+  PRODUCT_GENDER_OPTIONS,
   ALLERGEN_OPTIONS,
   type Option,
 } from '@/data/profileOptions';
+import { effectiveProductGender } from '@/types/profile';
 import { cn } from '@/lib/utils';
 
 function Pills<T extends string>({
@@ -107,6 +109,18 @@ export function ProfilePreferences() {
             options={PRODUCT_PREF_OPTIONS}
             onChange={(v) => update({ productPref: v })}
           />
+        </Field>
+
+        <Field label="Produits affichés (genre)">
+          <Pills
+            value={effectiveProductGender(profile)}
+            options={PRODUCT_GENDER_OPTIONS}
+            onChange={(v) => update({ productGenderPref: v })}
+          />
+          <p className="mt-2 text-xs text-sage-400">
+            Par défaut selon votre genre. « Mixte » affiche tout, « Neutres » les
+            produits universels uniquement.
+          </p>
         </Field>
 
         <Field label="Allergies / ingrédients à éviter">

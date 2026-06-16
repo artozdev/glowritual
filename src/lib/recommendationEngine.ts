@@ -1,5 +1,6 @@
 import { getProductProvider, type ProductProvider } from './productProvider';
 import { normalizeIngredient } from './ingredientBlacklist';
+import { effectiveProductGender } from '@/types/profile';
 import type { CriterionResult, ProductNeed } from '@/types/domain';
 import type { Budget, UserProfile } from '@/types/profile';
 import type { Product, ProductRecommendation } from '@/types/products';
@@ -57,6 +58,22 @@ function isSensitive(profile: UserProfile): boolean {
   return profile.skinType === 'sensitive' || profile.productPref === 'sensitive';
 }
 
+/**
+ * Filtre genre (FERME) : croise le genre du produit avec la préférence
+ * d'affichage de l'utilisateur (dérivée du genre d'onboarding par défaut,
+ * modifiable dans les paramètres). Un produit sans genre = universel.
+ *  • female / male → produits du genre + universels (fallback unisexe garanti)
+ *  • all (mixte)   → tout
+ *  • unisex        → uniquement les produits universels
+ */
+function genderAllowed(product: Product, profile: UserProfile): boolean {
+  const filter = effectiveProductGender(profile);
+  const g = product.gender ?? 'all';
+  if (filter === 'all') return true;
+  if (filter === 'unisex') return g === 'all';
+  return g === filter || g === 'all';
+}
+
 /** Exclusion STRICTE : aucun produit contenant un allergène déclaré. */
 function hasAllergyConflict(product: Product, profile: UserProfile): boolean {
   if (profile.allergies.length === 0) return false;
@@ -100,15 +117,7 @@ function profileFitScore(product: Product, profile: UserProfile): number {
   if (product.price <= BUDGET_CEILING[profile.budget]) s += 4;
   else s -= 6;
 
-  // Genre (uniquement si déclaré des deux côtés).
-  if (
-    product.gender &&
-    product.gender !== 'all' &&
-    (profile.gender === 'female' || profile.gender === 'male') &&
-    product.gender !== profile.gender
-  ) {
-    s -= 6;
-  }
+  // (Le genre est désormais un filtre ferme, plus une simple pénalité.)
 
   // Âge : léger bonus fermeté/tonus après 36 ans.
   if (
@@ -158,6 +167,7 @@ function candidatesFor(
   return provider
     .byNeed(criterion.need)
     .filter((p) => p.rating >= MIN_RATING && p.reviewCount >= MIN_REVIEWS)
+    .filter((p) => genderAllowed(p, profile))
     .filter((p) => !hasAllergyConflict(p, profile));
 }
 
@@ -192,6 +202,7 @@ export function recommendProductForNeed(
   const ranked = provider
     .byNeed(need)
     .filter((p) => p.rating >= MIN_RATING && p.reviewCount >= MIN_REVIEWS)
+    .filter((p) => genderAllowed(p, profile))
     .filter((p) => !hasAllergyConflict(p, profile))
     .map((product) => ({
       product,
@@ -227,6 +238,7 @@ export function recommendRoutine(
         (p) =>
           p.isRoutine &&
           p.rating >= MIN_RATING &&
+          genderAllowed(p, profile) &&
           !hasAllergyConflict(p, profile),
       );
     if (routine) {
