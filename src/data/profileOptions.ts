@@ -167,8 +167,8 @@ export const CONCERN_TO_CRITERION: Record<Concern, CriterionId> = {
   radiance: 'glow',
   dark_circles: 'dark_circles',
   texture: 'skin_texture',
-  acne: 'skin_texture',
-  firmness: 'symmetry',
+  acne: 'imperfections',
+  firmness: 'firmness',
   posture: 'posture',
   tone: 'tone',
 };

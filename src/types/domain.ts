@@ -6,10 +6,17 @@ export type { ScanKind, RoutinePeriod };
 /* ── Critères d'analyse ─────────────────────────────────────────── */
 
 export type FaceCriterionId =
-  | 'hydration'
-  | 'glow'
-  | 'dark_circles'
-  | 'skin_texture'
+  | 'hydration' // hydratation / sécheresse
+  | 'glow' // éclat / teint terne
+  | 'imperfections' // boutons / acné / points noirs / sébum
+  | 'post_acne_marks' // marques & cicatrices post-acné
+  | 'skin_texture' // texture & pores
+  | 'pigmentation' // taches / teint inégal
+  | 'wrinkles' // rides & ridules
+  | 'firmness' // fermeté / relâchement
+  | 'dark_circles' // cernes & poches
+  | 'shine' // brillance / zone T
+  // — critères historiques conservés (non produits par le scan visage) —
   | 'lip_brow_care'
   | 'symmetry';
 
@@ -17,8 +24,11 @@ export type BodyCriterionId = 'posture' | 'tone' | 'skin_hydration';
 
 export type CriterionId = FaceCriterionId | BodyCriterionId;
 
-/** Provenance d'un score : calculé depuis les repères, ou heuristique/simulé. */
+/** Provenance d'un score : mesuré depuis l'image/les repères, ou estimé. */
 export type ScoreSource = 'computed' | 'heuristic';
+
+/** Niveau de sévérité d'un critère (cadre honnête, jamais culpabilisant). */
+export type Severity = 'healthy' | 'moderate' | 'marked';
 
 /**
  * Besoin ciblé par un critère — sert de pont vers le moteur de
@@ -28,7 +38,17 @@ export type ProductNeed =
   | 'hydration' // hydratation du visage
   | 'radiance' // éclat / luminosité du teint
   | 'eye_care' // cernes / contour de l'œil
-  | 'skin_renewal' // texture / grain de peau
+  | 'skin_renewal' // texture / grain de peau / exfoliation
+  | 'imperfections' // acné, boutons, points noirs, sébum
+  | 'post_acne_marks' // marques & cicatrices post-acné
+  | 'pigmentation' // taches & teint inégal
+  | 'anti_aging' // rides, fermeté, signes de l'âge
+  | 'mattifying' // brillance / zone T
+  | 'sun_protection' // protection solaire (SPF)
+  | 'contour' // contour du visage / mâchoire / tonus (outils)
+  | 'hair' // cheveux & cils
+  | 'beard' // barbe
+  | 'wellness' // bien-être, stress (in & out)
   | 'lip_brow_care' // lèvres & sourcils
   | 'firmness' // fermeté / tonus du visage
   | 'body_firmness' // tonus du corps
@@ -53,7 +73,18 @@ export interface ScanZoneCapture {
   brightness: number;
   /** Taille du visage dans le cadre au moment de la capture (0..1). */
   faceSize: number;
+  /** Netteté mesurée (0..1) — proxy de texture/grain. */
+  sharpness?: number;
+  /** Homogénéité du teint (0..1, plus haut = plus uniforme). */
+  evenness?: number;
   capturedAt: string; // ISO
+}
+
+/** Signaux réellement mesurés par zone (alimentent l'analyse hybride). */
+export interface ZoneSignal {
+  brightness: number;
+  sharpness?: number;
+  evenness?: number;
 }
 
 /**
@@ -75,6 +106,8 @@ export interface CriterionResult {
   explanation: string;
   recommendation: string;
   source: ScoreSource;
+  /** Niveau de sévérité (cadre honnête : sain / modéré / marqué). */
+  severity: Severity;
   /** Position du point interactif sur l'image. */
   position: NormalizedPoint;
   /** Besoin produit ciblé par ce critère. */
@@ -102,7 +135,9 @@ export interface AnalysisInput {
    * `null`/absent → le moteur bascule sur le chemin heuristique.
    */
   landmarks?: ReadonlyArray<NormalizedPoint> | null;
-  /** Profil utilisateur — pondère les scores heuristiques & priorités. */
+  /** Signaux mesurés par zone pendant le scan guidé (analyse hybride). */
+  zones?: ReadonlyArray<ScanZoneCapture> | null;
+  /** Profil utilisateur — pondère les scores estimés & priorités. */
   profile?: UserProfile | null;
 }
 

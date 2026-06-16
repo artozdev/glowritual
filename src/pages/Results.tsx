@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -16,10 +16,13 @@ import { CriterionRadar } from '@/components/results/CriterionRadar';
 import { InteractivePoint } from '@/components/results/InteractivePoint';
 import { PointDetailSheet } from '@/components/results/PointDetailSheet';
 import { LockedResults } from '@/components/results/LockedResults';
+import { ProductCard } from '@/components/results/ProductCard';
 import { CRITERION_ICON } from '@/components/results/criterionMeta';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
 import { useScanSession } from '@/hooks/useScanSession';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
+import { recommendRoutine } from '@/lib/recommendationEngine';
 import { scoreHeadline, formatDate, average } from '@/lib/utils';
 import { ZONE_STEPS, ZONE_META } from '@/lib/scanZones';
 import type { CriterionResult } from '@/types/domain';
@@ -29,6 +32,7 @@ export default function Results() {
   const navigate = useNavigate();
   const { getScan, latest, hydrated } = useScanSession();
   const { user, isConfigured } = useAuth();
+  const { profile } = useProfile();
   const [selected, setSelected] = useState<CriterionResult | null>(null);
 
   const scan = scanId ? getScan(scanId) : latest;
@@ -72,6 +76,11 @@ export default function Results() {
 
   const { analysis, overall, image, createdAt } = scan;
   const strengths = analysis.criteria.filter((c) => c.score >= 80).length;
+  // Solution complète (routine globale) si elle couvre un besoin détecté.
+  const routine = useMemo(
+    () => recommendRoutine(analysis.criteria, profile),
+    [analysis, profile],
+  );
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -234,6 +243,22 @@ export default function Results() {
           </>
         );
       })()}
+
+      {/* Solution complète (routine globale) */}
+      {routine && (
+        <Card className="mt-8 overflow-hidden border-sage-200 bg-sage-50/60 p-4">
+          <p className="flex items-center gap-2 text-sm font-semibold text-sage-900">
+            <Sparkles className="h-4 w-4 text-sage-500" />
+            Ta solution complète
+          </p>
+          <p className="mt-1 text-sm text-sage-600">
+            Une routine qui couvre plusieurs de tes besoins d’un coup.
+          </p>
+          <div className="mt-3">
+            <ProductCard rec={routine} />
+          </div>
+        </Card>
+      )}
 
       {/* Liste des critères */}
       <h2 className="mt-8 text-lg font-semibold text-sage-900">Le détail</h2>

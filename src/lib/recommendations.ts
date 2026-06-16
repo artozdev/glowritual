@@ -86,6 +86,64 @@ export const FACE_CONTENT: Record<FaceCriterionId, CriterionContent> = {
     recommendation:
       'La symétrie parfaite n’existe pas et n’est pas un objectif. Mettez en valeur vos atouts (coiffure, sourire, posture). Aucun geste correctif n’est nécessaire.',
   },
+
+  /* ── Critères ajoutés (analyse hybride visage) ──────────────────── */
+  imperfections: {
+    label: 'Imperfections',
+    short: 'Imperfections',
+    position: { x: 0.4, y: 0.55 },
+    good: 'Votre peau paraît nette, sans imperfection marquée.',
+    nurture:
+      'Quelques imperfections peuvent apparaître — rien qu’une routine douce n’apaise.',
+    recommendation:
+      'Nettoyage doux matin et soir, un actif séborégulateur (niacinamide, zinc) et on évite de toucher/percer. Pas de gommage agressif.',
+  },
+  post_acne_marks: {
+    label: 'Marques post-acné',
+    short: 'Marques',
+    position: { x: 0.6, y: 0.6 },
+    good: 'Aucune marque notable — votre peau est régulière.',
+    nurture: 'D’éventuelles marques s’estompent avec le temps et les bons actifs.',
+    recommendation:
+      'Un sérum anti-marques (niacinamide, vitamine C) et une protection solaire quotidienne pour éviter qu’elles ne foncent.',
+  },
+  pigmentation: {
+    label: 'Teint & taches',
+    short: 'Teint',
+    position: { x: 0.62, y: 0.5 },
+    good: 'Votre teint est homogène.',
+    nurture: 'Quelques irrégularités de teint peuvent être unifiées en douceur.',
+    recommendation:
+      'Vitamine C le matin, exfoliation douce hebdomadaire et SPF quotidien (la 1ʳᵉ cause de taches, c’est le soleil).',
+  },
+  wrinkles: {
+    label: 'Rides & ridules',
+    short: 'Ridules',
+    position: { x: 0.3, y: 0.4 },
+    good: 'Peu de ridules visibles — belle souplesse de peau.',
+    nurture:
+      'Quelques ridules d’expression apparaissent : elles racontent votre histoire, et on peut les repulper.',
+    recommendation:
+      'Hydratation + actif repulpant (acide hyaluronique, peptides, bakuchiol) et SPF. Le sommeil compte beaucoup.',
+  },
+  firmness: {
+    label: 'Fermeté & contour',
+    short: 'Fermeté',
+    position: { x: 0.7, y: 0.72 },
+    good: 'Votre contour du visage est tonique et défini.',
+    nurture: 'Le contour gagnerait un peu de tonus — en douceur.',
+    recommendation:
+      'Massage (gua sha), actifs raffermissants (peptides, vitamine C) et une bonne hydratation. La régularité prime sur l’intensité.',
+  },
+  shine: {
+    label: 'Brillance / zone T',
+    short: 'Zone T',
+    position: { x: 0.5, y: 0.42 },
+    good: 'Votre zone T est équilibrée, sans excès de brillance.',
+    nurture: 'Un peu de brillance sur la zone T — facile à matifier sans décaper.',
+    recommendation:
+      'Nettoyant doux, niacinamide/zinc pour réguler le sébum, et une hydratation légère (sur-décaper aggrave la brillance).',
+  },
 };
 
 export const BODY_CONTENT: Record<BodyCriterionId, CriterionContent> = {

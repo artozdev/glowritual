@@ -68,6 +68,8 @@ export interface Product {
   network?: AffiliateNetwork;
   /** Lien affilié pré-construit (sinon généré par lib/affiliate.ts). */
   affiliateUrl?: string;
+  /** Solution complète (routine globale) couvrant plusieurs besoins. */
+  isRoutine?: boolean;
 }
 
 /** Recommandation produit retournée par le moteur de matching. */

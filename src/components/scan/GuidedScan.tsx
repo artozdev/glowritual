@@ -144,11 +144,14 @@ export function GuidedScan({ onComplete, onExit }: Props) {
     if (id !== 'global' && lm) {
       image = captureRegion(zoneBox(lm, id), 0.02) ?? full;
     }
+    const r2 = (n: number) => Math.round(n * 100) / 100;
     const cap: ScanZoneCapture = {
       zone: id,
       image,
-      brightness: Math.round(m.brightness * 100) / 100,
-      faceSize: Math.round(m.faceSize * 100) / 100,
+      brightness: r2(m.brightness),
+      faceSize: r2(m.faceSize),
+      sharpness: r2(m.sharpness),
+      evenness: r2(m.evenness),
       capturedAt: new Date().toISOString(),
     };
     capturesRef.current[id] = cap;
