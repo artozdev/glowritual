@@ -367,13 +367,22 @@ function Footer() {
             <p className="text-xs font-semibold uppercase tracking-widest text-mint">
               Légal
             </p>
-            <a href="#" className="transition-colors hover:text-sand">
-              Confidentialité
-            </a>
-            <a href="#" className="transition-colors hover:text-sand">
+            <Link to="/legal/mentions-legales" className="transition-colors hover:text-sand">
+              Mentions légales
+            </Link>
+            <Link to="/legal/cgu" className="transition-colors hover:text-sand">
               CGU
-            </a>
-            <a href="#" className="transition-colors hover:text-sand">
+            </Link>
+            <Link
+              to="/legal/confidentialite"
+              className="transition-colors hover:text-sand"
+            >
+              Politique de Confidentialité
+            </Link>
+            <a
+              href="mailto:glowritualio@gmail.com"
+              className="transition-colors hover:text-sand"
+            >
               Contact
             </a>
           </nav>

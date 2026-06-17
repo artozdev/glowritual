@@ -15,6 +15,7 @@ const Progress = lazy(() => import('@/pages/Progress'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const Pricing = lazy(() => import('@/pages/Pricing'));
 const Ambassador = lazy(() => import('@/pages/Ambassador'));
+const Legal = lazy(() => import('@/pages/Legal'));
 
 /**
  * Routing applicatif.
@@ -37,6 +38,14 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<FullScreenLoader />}>
         <Onboarding />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/legal/:doc',
+    element: (
+      <Suspense fallback={<FullScreenLoader />}>
+        <Legal />
       </Suspense>
     ),
   },
