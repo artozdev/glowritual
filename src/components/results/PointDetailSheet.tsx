@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, Info, ShoppingBag, Sparkles } from 'lucide-react';
+import { Leaf, Info, ShoppingBag, Sparkles, ArrowLeft } from 'lucide-react';
 import { Sheet } from '@/components/ui/Sheet';
 import { Badge } from '@/components/ui/Badge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -40,6 +40,17 @@ export function PointDetailSheet({ criterion, onClose }: Props) {
     <Sheet open={open} onClose={onClose} ariaLabel={criterion?.label}>
       {criterion && (
         <div>
+          {/* Bouton retour : ferme la fiche et revient à l'écran d'origine
+              (résultats / liste des recommandations). Clé sur mobile. */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="-ml-1.5 mb-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium text-sage-500 transition-colors hover:text-sage-700"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour
+          </button>
+
           <div className="flex items-center gap-3 pr-8">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sage-50">
               <Icon className="h-5 w-5 text-sage-500" />
