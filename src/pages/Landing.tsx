@@ -21,6 +21,7 @@ import {
   type Testimonial,
 } from '@/components/landing/TestimonialsCarousel';
 import { Laurels } from '@/components/landing/Laurels';
+import { TawkChat } from '@/components/common/TawkChat';
 
 /* ── Données (placeholders clairement remplaçables) ─────────────── */
 
@@ -70,6 +71,7 @@ export default function Landing() {
       <TestimonialsSection />
       <FinalCta />
       <Footer />
+      <TawkChat />
     </div>
   );
 }
