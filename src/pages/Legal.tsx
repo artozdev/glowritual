@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
+import { TawkChat } from '@/components/common/TawkChat';
 import { LEGAL_DOCS, LEGAL_LINKS } from '@/data/legal';
 
 /** Transforme emails et URLs en liens cliquables dans un paragraphe. */
@@ -102,6 +103,7 @@ export default function Legal() {
           ))}
         </nav>
       </main>
+      <TawkChat />
     </div>
   );
 }
