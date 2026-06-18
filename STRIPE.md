@@ -29,7 +29,7 @@ cd ~/Documents/NaturalMe
 STRIPE_SECRET_KEY=sk_live_xxx node scripts/setup-stripe.mjs
 ```
 Le script affiche `Stripe LIVE ⚠️`, crée le produit **Glow Premium**, les 2 prix
-(**9,99 €/mois** et **59,90 €/an**) et l'**endpoint webhook**, puis imprime :
+(**16 €/mois** et **149 €/an**) et l'**endpoint webhook**, puis imprime :
 ```
 STRIPE_PRICE_MONTHLY=price_…
 STRIPE_PRICE_ANNUAL=price_…
@@ -40,7 +40,7 @@ STRIPE_WEBHOOK_SECRET=whsec_…   (live)
 <summary>…ou à la main dans le dashboard (Live mode)</summary>
 
 1. **Products → Add product** « Glow Premium » + 2 prix récurrents
-   `9,99 € / month` et `59,90 € / year` → note les `price_…`.
+   `16 € / month` et `149 € / year` → note les `price_…`.
 2. **Developers → Webhooks → Add endpoint** : `https://glowritual.io/api/stripe/webhook`,
    événements `checkout.session.completed`, `customer.subscription.updated`,
    `customer.subscription.deleted` → copie le **Signing secret** `whsec_…`.

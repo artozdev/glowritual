@@ -27,8 +27,8 @@ const stripe = new Stripe(key);
 const live = key.startsWith('sk_live_');
 
 const PLANS = [
-  { lookup: 'glow_premium_monthly', label: 'mensuel', amount: 999, interval: 'month' },
-  { lookup: 'glow_premium_annual', label: 'annuel', amount: 5990, interval: 'year' },
+  { lookup: 'glow_premium_monthly_v2', label: 'mensuel', amount: 1600, interval: 'month' },
+  { lookup: 'glow_premium_annual_v2', label: 'annuel', amount: 14900, interval: 'year' },
 ];
 
 /** Récupère un prix existant par lookup_key, ou le crée (sur un produit donné). */
@@ -54,7 +54,7 @@ async function main() {
   console.log(`\n🔌 Stripe ${live ? 'LIVE ⚠️' : 'TEST'} — configuration de Glow Premium\n`);
 
   // Réutilise le produit d'un prix existant, sinon en crée un.
-  const existing = await stripe.prices.list({ lookup_keys: ['glow_premium_monthly'], limit: 1, expand: ['data.product'] });
+  const existing = await stripe.prices.list({ lookup_keys: ['glow_premium_monthly_v2'], limit: 1, expand: ['data.product'] });
   let productId = existing.data[0]?.product?.id;
   if (!productId) {
     const product = await stripe.products.create({

@@ -1,23 +1,41 @@
 /**
- * Tarifs Premium — source unique (page Pricing + écran d'upgrade).
+ * Offre UNIQUE Glow Premium — source de vérité des tarifs (Pricing + upgrade).
  *
- * Affichage annuel : 4,99 €/mois (−50 %), mais débité 59,90 €/an en une fois
- * via Stripe (price annuel). L'économie vs mensuel ≈ 60 €/an.
+ * Deux rythmes de paiement, une seule offre :
+ *  • Mensuel : 16 €/mois
+ *  • Annuel  : 149 €/an, débité en une fois (≈ 12,42 €/mois, −22 %).
+ *
+ * ⚠️ Les montants RÉELS débités sont définis par les prix Stripe
+ * (STRIPE_PRICE_MONTHLY / STRIPE_PRICE_ANNUAL). Garder ces valeurs alignées.
  */
 
-export const MONTHLY_PRICE = 9.99; // €/mois (formule mensuelle)
-export const ANNUAL_TOTAL = 59.9; // € débités en une fois / an
-export const ANNUAL_PER_MONTH = 4.99; // €/mois équivalent en annuel
-/** Économie annuelle vs paiement mensuel (≈ 60 €). */
-export const ANNUAL_SAVINGS = Math.round(MONTHLY_PRICE * 12 - ANNUAL_TOTAL);
+export const MONTHLY_PRICE = 16; // €/mois
+export const ANNUAL_TOTAL = 149; // € débités en une fois / an
+export const ANNUAL_PER_MONTH = Math.round((ANNUAL_TOTAL / 12) * 100) / 100; // ≈ 12,42
+/** Économie de l'annuel vs mensuel, en %. */
+export const ANNUAL_SAVINGS_PCT = Math.round(
+  (1 - ANNUAL_TOTAL / (MONTHLY_PRICE * 12)) * 100,
+);
 
-export const eur = (n: number) => `${n.toFixed(2).replace('.', ',')} €`;
+/** Format € sans décimales inutiles (16 € ; 12,42 €). */
+export const eur = (n: number) =>
+  n % 1 === 0 ? `${n} €` : `${n.toFixed(2).replace('.', ',')} €`;
 
-/** Avantages Premium (identiques sur les deux formules). */
-export const PREMIUM_FEATURES = [
-  'Scans illimités',
-  'Résultats détaillés débloqués (scores, zones, radar)',
-  'Recommandations de produits naturels',
-  'Routine automatique + calendrier',
-  'Suivi des progrès & timeline avant/après',
+export interface PremiumFeature {
+  label: string;
+  /** Fonctionnalité à venir (badge « Bientôt », non encore active). */
+  soon?: boolean;
+}
+
+/** Tout ce que débloque l'offre unique. */
+export const PREMIUM_FEATURES: PremiumFeature[] = [
+  { label: 'Re-scans illimités' },
+  { label: 'Suivi de progression' },
+  { label: 'Routine personnalisée' },
+  { label: 'Historique des analyses' },
+  { label: 'Recommandations personnalisées (+100 produits)' },
+  { label: 'Conseils skincare' },
+  { label: 'Conseils hygiène de vie' },
+  { label: 'Assistant IA beauté disponible 24h/24', soon: true },
+  { label: 'Plan de transformation personnalisé', soon: true },
 ];

@@ -10,8 +10,7 @@ import {
   Sparkles,
   type LucideIcon,
 } from 'lucide-react';
-import { PremiumPlanCard } from './PremiumPlanCard';
-import { useCheckout } from './useCheckout';
+import { PremiumOffer } from './PremiumOffer';
 
 export type PremiumFeature = 'routine' | 'progress' | 'ambassador' | 'generic';
 
@@ -50,7 +49,6 @@ const FEATURES: Record<
 export function UpgradeScreen({ feature = 'generic' }: { feature?: PremiumFeature }) {
   const f = FEATURES[feature];
   const Icon = f.icon;
-  const { busy, error, goCheckout } = useCheckout();
 
   return (
     <div className="mx-auto max-w-3xl py-2">
@@ -78,29 +76,12 @@ export function UpgradeScreen({ feature = 'generic' }: { feature?: PremiumFeatur
       </motion.div>
 
       <p className="mt-6 text-center text-sm font-semibold text-sage-900">
-        Choisis ta formule et débloque tout Glow
+        Débloque tout Glow avec l’offre unique
       </p>
 
-      {error && (
-        <p className="mx-auto mt-3 max-w-md rounded-2xl bg-red-50 px-4 py-3 text-center text-sm text-red-600">
-          {error}
-        </p>
-      )}
-
-      {/* Deux formules côte à côte */}
-      <div className="mt-4 grid items-stretch gap-4 sm:grid-cols-2">
-        <PremiumPlanCard
-          interval="monthly"
-          busy={busy === 'monthly'}
-          disabled={busy !== null}
-          onSelect={() => goCheckout('monthly')}
-        />
-        <PremiumPlanCard
-          interval="annual"
-          busy={busy === 'annual'}
-          disabled={busy !== null}
-          onSelect={() => goCheckout('annual')}
-        />
+      {/* L'offre unique (mensuel / annuel) */}
+      <div className="mt-4">
+        <PremiumOffer />
       </div>
 
       <div className="mt-5 text-center">
