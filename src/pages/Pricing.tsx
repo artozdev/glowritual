@@ -1,23 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Check, Leaf, Sparkles, ShieldCheck, Settings, Loader2 } from 'lucide-react';
+import {
+  Sparkles,
+  ShieldCheck,
+  Settings,
+  Loader2,
+  ScanFace,
+} from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
-import { PremiumPlanCard } from '@/components/premium/PremiumPlanCard';
+import { PremiumOffer } from '@/components/premium/PremiumOffer';
 import { useCheckout } from '@/components/premium/useCheckout';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
-
-const FREE_FEATURES = [
-  { label: '1 scan facial offert', ok: true },
-  { label: 'Aperçu de l’application', ok: true },
-  { label: 'Résultats complets (scores, zones, routine)', ok: false },
-];
 
 export default function Pricing() {
   const navigate = useNavigate();
   const { user, isConfigured, refreshSubscription } = useAuth();
-  const { busy, error, goCheckout, goPortal } = useCheckout();
+  const { busy, error, goPortal } = useCheckout();
   const [params, setParams] = useSearchParams();
 
   const isPremium = user?.plan === 'premium';
@@ -43,25 +42,25 @@ export default function Pricing() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-2xl">
       <div className="text-center">
         <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-mint/40 px-3 py-1 text-xs font-semibold text-forest">
           <Sparkles className="h-3 w-3" />
-          Offre de lancement · −50 % en annuel
+          Offre de lancement · ~2 mois offerts en annuel
         </span>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-forest">
-          Révélez votre éclat, sans limite
+          Révèle ton éclat, sans limite
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sage-600">
-          Commencez gratuitement. Débloquez votre analyse complète et vos
-          routines avec Glow Premium.
+          Une seule offre, tout compris. Essaie d’abord gratuitement, débloque
+          tout avec Glow Premium.
         </p>
       </div>
 
       {justSubscribed && isPremium && (
         <div className="mx-auto mt-6 flex max-w-md items-center gap-2 rounded-2xl border border-mint bg-mint/30 px-4 py-3 text-sm font-medium text-forest">
           <ShieldCheck className="h-4 w-4" />
-          Bienvenue dans Glow Premium ✨ Votre analyse est débloquée.
+          Bienvenue dans Glow Premium ✨ Tout est débloqué.
         </div>
       )}
       {error && (
@@ -92,68 +91,37 @@ export default function Pricing() {
           </Button>
         </div>
       ) : (
-        <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-3">
-          {/* Gratuit */}
-          <div className="flex flex-col rounded-3xl border border-beige-200/70 bg-white p-6 shadow-soft">
-            <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sand">
-                <Leaf className="h-4 w-4 text-forest" />
-              </span>
-              <h2 className="font-semibold text-forest">Gratuit</h2>
-            </div>
-            <p className="mt-4 text-4xl font-bold tracking-tight text-forest">0 €</p>
-            <p className="mt-1 text-sm text-sage-500">Pour découvrir Glow</p>
-            <ul className="mt-4 space-y-2.5">
-              {FREE_FEATURES.map((f) => (
-                <li
-                  key={f.label}
-                  className={cn(
-                    'flex items-start gap-2 text-sm',
-                    f.ok ? 'text-sage-700' : 'text-sage-400',
-                  )}
-                >
-                  <Check
-                    className={cn(
-                      'mt-0.5 h-4 w-4 shrink-0',
-                      f.ok ? 'text-forest' : 'text-beige-300',
-                    )}
-                  />
-                  {f.label}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6 flex-1" />
-            <Button
-              variant="secondary"
-              className="w-full"
-              disabled={!!user}
+        <>
+          {/* Essai gratuit — une invitation, pas un plan. */}
+          <div className="mx-auto mt-8 max-w-md rounded-3xl border border-beige-200 bg-white p-5 text-center shadow-soft">
+            <p className="flex items-center justify-center gap-1.5 text-sm font-semibold text-forest">
+              <Sparkles className="h-4 w-4 text-forest-light" />
+              Découvre Glow gratuitement
+            </p>
+            <p className="mx-auto mt-1.5 max-w-sm text-sm text-sage-600">
+              Fais ton premier scan : tu vois ton score global et le nombre de
+              zones détectées. Le reste se débloque avec Premium.
+            </p>
+            <button
+              type="button"
               onClick={() => navigate(user ? '/scan' : '/auth')}
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-forest underline-offset-4 hover:underline"
             >
-              {user ? 'Votre plan actuel' : 'Commencer gratuitement'}
-            </Button>
+              <ScanFace className="h-4 w-4" />
+              Faire mon scan gratuit
+            </button>
           </div>
 
-          {/* Premium Mensuel */}
-          <PremiumPlanCard
-            interval="monthly"
-            busy={busy === 'monthly'}
-            disabled={busy !== null}
-            onSelect={() => goCheckout('monthly')}
-          />
-
-          {/* Premium Annuel (mis en avant) */}
-          <PremiumPlanCard
-            interval="annual"
-            busy={busy === 'annual'}
-            disabled={busy !== null}
-            onSelect={() => goCheckout('annual')}
-          />
-        </div>
+          {/* L'offre unique */}
+          <div className="mt-8">
+            <PremiumOffer />
+          </div>
+        </>
       )}
 
       {isConfigured && !isPremium && (
         <p className="mt-6 text-center text-xs text-sage-400">
-          Un code ambassadeur ? Saisissez-le à l’étape de paiement Stripe.
+          Un code ambassadeur ? Saisis-le à l’étape de paiement Stripe.
         </p>
       )}
 
