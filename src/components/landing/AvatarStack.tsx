@@ -4,13 +4,13 @@ import { AVATARS } from './media';
 function Avatar({ src }: { src: string }) {
   const [error, setError] = useState(false);
   return (
-    <span className="inline-block h-7 w-7 overflow-hidden rounded-full bg-mint-deep ring-2 ring-white">
+    <span className="inline-block h-7 w-7 overflow-hidden rounded-full bg-neutral-200 ring-2 ring-white">
       {!error && (
         <img
           src={src}
           alt=""
           onError={() => setError(true)}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover grayscale"
         />
       )}
     </span>

@@ -17,88 +17,157 @@
     "en": "English"
   },
   "header": {
+    "home": "Accueil",
     "features": "Fonctionnalités",
-    "why": "Pourquoi Glow",
+    "pricing": "Tarifs",
     "reviews": "Avis",
-    "ctaStart": "Commencer gratuitement",
-    "login": "Se connecter"
+    "cta": "Commencer"
   },
   "hero": {
-    "badge": "Adoré par +{{count}} utilisateurs",
-    "titleLine1": "Révèle ton glow",
-    "titleLine2": "naturel.",
-    "subtitle": "Scanne ton visage avec l’IA et reçois une routine sur-mesure avec des produits 100 % naturels. Plus beau, plus sain — sans chirurgie, sans risque.",
+    "badge": "Nouveau · Ton glow, guidé par l’IA",
+    "title": "Révèle ton [glow] naturel",
+    "subtitle": "Scanne ton visage avec l’IA et reçois une routine sur-mesure, 100 % naturelle. Plus sain, plus lumineux — sans chirurgie, sans risque.",
     "ctaPrimary": "Commencer gratuitement",
-    "ctaSecondary": "Se connecter",
-    "perks": ["Premier scan gratuit", "Sans carte bancaire", "100 % naturel"]
+    "ctaSecondary": "Voir la démo",
+    "social": "Adoré par +{{count}} utilisateurs",
+    "rating": "4,9"
   },
   "beforeAfter": {
     "eyebrow": "Des résultats visibles, naturellement",
-    "title": "Ton meilleur toi, sans bistouri.",
-    "body": "Glow analyse chaque zone de ta peau, identifie ce qui peut être sublimé, et te guide avec des soins naturels. Le résultat : une peau plus douce, plus nette et plus lumineuse — naturellement. Glisse pour voir la différence.",
-    "disclaimer": "Résultats illustratifs. Ils varient selon chaque personne et la régularité de la routine."
+    "title": "Une nouvelle façon de [rayonner]",
+    "body": "Glow analyse chaque zone de ta peau, identifie ce qui peut être sublimé et te guide avec des soins naturels. Le résultat : une peau plus douce, plus nette et plus lumineuse. Glisse pour voir la différence.",
+    "before": "Avant",
+    "after": "Après",
+    "disclaimer": "Résultats illustratifs, variables selon chaque personne et la régularité de la routine."
   },
-  "impact": {
-    "eyebrow": "L’impact de Glow sur toi",
-    "title": "Prendre soin de soi change tout",
-    "tabs": {
-      "confidence": "Confiance",
-      "skin": "Peau",
-      "habits": "Habitudes",
-      "wellbeing": "Bien-être"
-    },
-    "benefits": {
-      "confidence": [
-        { "accent": "Plus", "rest": "de confiance", "text": "Prendre soin de sa peau et voir ses progrès renforce l’estime de soi au quotidien." },
-        { "accent": "Moins", "rest": "de complexes", "text": "Comprendre sa peau et savoir quoi faire apaise l’anxiété liée à l’apparence." },
-        { "accent": "Une", "rest": "fierté personnelle", "text": "Tenir sa routine et constater les résultats procure un vrai sentiment d’accomplissement." }
-      ],
-      "skin": [
-        { "accent": "Une", "rest": "peau plus saine", "text": "Une routine régulière et adaptée améliore visiblement l’éclat et la qualité de la peau." },
-        { "accent": "Des", "rest": "gestes adaptés", "text": "Fini les produits au hasard : chaque recommandation est ciblée sur tes besoins réels." },
-        { "accent": "Du", "rest": "naturel, sans risque", "text": "Uniquement des produits sains, sans substances agressives pour ta peau." }
-      ],
-      "habits": [
-        { "accent": "Une", "rest": "routine qui tient", "text": "Glow transforme le soin en habitude simple, suivie jour après jour." },
-        { "accent": "Du", "rest": "suivi motivant", "text": "Voir sa progression dans le temps donne envie de continuer." },
-        { "accent": "Moins", "rest": "de charge mentale", "text": "L’app décide quoi faire et quand, tu n’as plus à y penser." }
-      ],
-      "wellbeing": [
-        { "accent": "Un", "rest": "rituel pour soi", "text": "Un moment quotidien de soin, rien que pour toi, qui fait du bien au moral." },
-        { "accent": "Une", "rest": "approche globale", "text": "Peau, sommeil, hydratation, stress : Glow prend soin de toi en entier." },
-        { "accent": "Du", "rest": "positif, pas de pression", "text": "Une démarche bienveillante, axée progrès personnel et jamais jugement." }
-      ]
-    }
+  "compare": {
+    "title": "Une nouvelle façon de [prendre soin de toi]",
+    "subtitle": "Fini les produits au hasard et les routines qu’on abandonne. Glow t’accompagne, étape par étape, vers une peau plus saine — naturellement.",
+    "oldTitle": "L’ancienne voie",
+    "newTitle": "La nouvelle voie",
+    "newTag": "Glow",
+    "stepLabel": "Étape {{n}}",
+    "oldSteps": [
+      "Des produits choisis au hasard",
+      "Des conseils génériques",
+      "Aucun suivi dans le temps",
+      "On abandonne vite",
+      "Résultats incertains"
+    ],
+    "newSteps": [
+      "Un scan IA précis de ta peau",
+      "Une analyse personnalisée, zone par zone",
+      "Une routine naturelle sur-mesure",
+      "Un suivi de ta progression",
+      "Des résultats visibles"
+    ]
+  },
+  "features": {
+    "title": "Tout ce qu’il te faut pour [rayonner]",
+    "subtitle": "Vous êtes-vous déjà demandé ce dont votre peau a vraiment besoin ? Glow vous le révèle.",
+    "scanCaption": "Analyse en cours",
+    "items": [
+      {
+        "title": "Analyse précise, zone par zone",
+        "text": "Notre IA examine chaque partie de ton visage et te donne un score, une explication claire et des conseils ciblés."
+      },
+      {
+        "title": "100 % naturel, zéro risque",
+        "text": "Uniquement des produits sains et vérifiés, sans substance agressive. Aucune chirurgie, jamais."
+      },
+      {
+        "title": "Une routine qui s’adapte à toi",
+        "text": "Après chaque scan, ta routine se met à jour automatiquement et te suit au quotidien."
+      },
+      {
+        "title": "Pensé pour toutes les peaux",
+        "text": "Tous les types de peau et toutes les carnations, sans recommandation standardisée."
+      }
+    ]
   },
   "testimonials": {
-    "title": "Ils ont retrouvé confiance.",
-    "social": "Déjà adopté par +{{count}} utilisateurs",
-    "socialNote": "au lancement de Glow",
-    "community": "Une communauté qui rayonne au naturel.",
+    "title": "Ils ont retrouvé [confiance]",
+    "ratingNote": "Ils nous font confiance",
     "items": [
-      { "name": "Léa M.", "quote": "En 3 semaines ma peau est métamorphosée. Les conseils sont précis et 100 % naturels, j’adore." },
-      { "name": "Thomas R.", "quote": "Enfin une app qui me dit quoi faire au lieu de me vendre n’importe quoi. Ma routine est suivie au quotidien." },
-      { "name": "Inès B.", "quote": "Le scan est hyper précis et les produits recommandés sont top. Mon teint n’a jamais été aussi lumineux." },
-      { "name": "Karim D.", "quote": "Je suivais 0 routine avant. Maintenant c’est devenu un réflexe et les résultats se voient." },
-      { "name": "Sarah L.", "quote": "L’avant/après sur mon propre visage m’a motivée à fond. Bluffant et naturel." }
+      {
+        "name": "Léa",
+        "role": "Étudiante",
+        "quote": "En 3 semaines, ma peau est métamorphosée. 100 % naturel, j’adore."
+      },
+      {
+        "name": "Thomas",
+        "role": "Fondateur",
+        "quote": "Enfin une app qui me dit quoi faire, simplement. Ma routine est suivie chaque jour."
+      },
+      {
+        "name": "Inès",
+        "role": "Marketing",
+        "quote": "Le scan est hyper précis, mon teint n’a jamais été aussi lumineux."
+      }
+    ]
+  },
+  "daily": {
+    "eyebrow": "Au plus près",
+    "title": "Glow au [quotidien]",
+    "note": "Adopté par +{{count}} utilisateurs",
+    "usages": [
+      {
+        "title": "Le scan du matin",
+        "text": "30 secondes devant la caméra pour suivre l’évolution de ta peau."
+      },
+      {
+        "title": "Ta routine guidée",
+        "text": "Des étapes simples, rappelées au bon moment, jour après jour."
+      },
+      {
+        "title": "Tes progrès en photo",
+        "text": "Compare tes scans dans le temps et vois ta peau s’améliorer."
+      },
+      {
+        "title": "Des produits naturels",
+        "text": "Des recommandations saines, filtrées des ingrédients à risque."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "items": [
+      {
+        "q": "Glow remplace-t-il un dermatologue ?",
+        "a": "Non. Glow est un outil de bien-être qui t’aide à prendre soin de ta peau au naturel. Pour tout problème médical, consulte un professionnel de santé."
+      },
+      {
+        "q": "Les produits recommandés sont-ils vraiment naturels ?",
+        "a": "Oui. Chaque produit est sélectionné et filtré pour exclure les ingrédients à risque."
+      },
+      {
+        "q": "Combien de temps pour voir des résultats ?",
+        "a": "Cela varie selon chacun, mais une routine régulière donne des résultats visibles en quelques semaines."
+      },
+      {
+        "q": "Mes photos sont-elles privées ?",
+        "a": "Oui. Tes images sont chiffrées, privées, et tu peux les supprimer à tout moment."
+      },
+      {
+        "q": "Puis-je essayer gratuitement ?",
+        "a": "Oui, ton premier scan est gratuit."
+      }
     ]
   },
   "finalCta": {
-    "badge": "Ton glow up commence ici",
-    "title": "Commence ton glow up dès aujourd’hui.",
+    "title": "Commence ton [glow up] dès aujourd’hui",
     "subtitle": "Ton premier scan est gratuit. Découvre ton potentiel en 30 secondes.",
-    "ctaPrimary": "Commencer gratuitement",
-    "ctaSecondary": "Se connecter",
-    "note": "Sans engagement · Annulable à tout moment."
+    "cta": "Commencer gratuitement",
+    "note": "Sans engagement · Annulable à tout moment"
   },
   "footer": {
     "tagline": "Ton glow naturel, guidé par l’IA.",
     "legalTitle": "Légal",
     "legalNotice": "Mentions légales",
     "terms": "CGU",
-    "privacy": "Politique de Confidentialité",
+    "privacy": "Confidentialité",
     "contact": "Contact",
-    "disclaimer": "Glow ne remplace pas l’avis d’un dermatologue ou d’un professionnel de santé.",
+    "disclaimer": "Glow ne remplace pas l’avis d’un dermatologue.",
     "copyright": "© {{year}} Glow · Avis et chiffres illustratifs."
   },
   "chat": {

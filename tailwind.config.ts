@@ -23,6 +23,14 @@ const config: Config = {
           800: '#0b4f28',
           900: '#08331a', // texte foncé
         },
+        // Noir signature de la refonte landing « premium » (N&B + accent unique).
+        // L'accent reste sage-300 (#85ff9c) — identique aux boutons de l'app.
+        ink: {
+          DEFAULT: '#0A0A0A',
+          900: '#0A0A0A',
+          800: '#141414',
+          700: '#1f1f1f',
+        },
         // Beige / sable — surfaces secondaires
         beige: {
           50: '#faf8f3',
@@ -55,6 +63,8 @@ const config: Config = {
         'soft-lg': '0 12px 40px -12px rgba(16, 80, 40, 0.18)',
         // Lueur menthe pour les CTA principaux
         glow: '0 1px 0 0 rgba(255,255,255,0.6) inset, 0 18px 50px -16px rgba(69, 221, 116, 0.65)',
+        // Lueur accent #85ff9c discrète (éléments mis en valeur sur fond sombre)
+        'accent-glow': '0 0 0 1px rgba(133,255,156,0.5), 0 14px 50px -14px rgba(133,255,156,0.45)',
       },
       backgroundImage: {
         'sage-gradient': 'linear-gradient(135deg, #d6fbe1 0%, #f3ede1 100%)',

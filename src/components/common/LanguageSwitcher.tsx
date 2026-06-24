@@ -17,7 +17,7 @@ export function LanguageSwitcher({
     <div
       className={cn(
         'inline-flex items-center rounded-full border p-0.5',
-        tone === 'dark' ? 'border-white/20' : 'border-forest/15',
+        tone === 'dark' ? 'border-white/20' : 'border-ink/15',
         className,
       )}
     >
@@ -31,11 +31,11 @@ export function LanguageSwitcher({
             'rounded-full px-2.5 py-1 text-xs font-semibold transition-colors',
             lang === l
               ? tone === 'dark'
-                ? 'bg-white text-forest'
-                : 'bg-forest text-sand'
+                ? 'bg-white text-ink'
+                : 'bg-ink text-white'
               : tone === 'dark'
                 ? 'text-white/70 hover:text-white'
-                : 'text-forest/55 hover:text-forest',
+                : 'text-ink/55 hover:text-ink',
           )}
         >
           {l.toUpperCase()}
