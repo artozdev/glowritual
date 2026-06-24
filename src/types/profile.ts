@@ -83,6 +83,8 @@ export interface UserProfile {
    * autre/non précisé → universels).
    */
   productGenderPref?: ProductGenderPref;
+  /** Langue de l'interface (fr/en). Absent → détection auto. */
+  language?: 'fr' | 'en';
 }
 
 /** Filtre genre effectif (préférence explicite, sinon dérivé du genre). */

@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Mail,
   Lock,
@@ -12,6 +13,7 @@ import {
   Info,
 } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AuroraBackground } from '@/components/common/AuroraBackground';
@@ -21,26 +23,28 @@ type Mode = 'signin' | 'signup' | 'forgot';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Traduit en français les messages d'erreur Supabase fréquents. */
-function translateError(msg: string): string {
+/** Mappe un message d'erreur Supabase vers une clé i18n (ou null si inconnu). */
+function errorKey(msg: string): string | null {
   const m = msg.toLowerCase();
-  if (m.includes('invalid login')) return 'Email ou mot de passe incorrect.';
+  if (m.includes('invalid login')) return 'errInvalidLogin';
   if (m.includes('already registered') || m.includes('already exists'))
-    return 'Un compte existe déjà avec cet email.';
-  if (m.includes('email not confirmed'))
-    return 'Confirmez votre email avant de vous connecter.';
-  if (m.includes('password should be at least'))
-    return 'Le mot de passe doit faire au moins 6 caractères.';
+    return 'errExists';
+  if (m.includes('email not confirmed')) return 'errNotConfirmed';
+  if (m.includes('password should be at least')) return 'errPasswordShort';
   if (m.includes('invalid email') || m.includes('unable to validate email'))
-    return 'Adresse email invalide.';
-  if (m.includes('rate limit') || m.includes('too many'))
-    return 'Trop de tentatives, réessayez dans un instant.';
-  return msg; // messages démo déjà en français
+    return 'errInvalidEmail';
+  if (m.includes('rate limit') || m.includes('too many')) return 'errRate';
+  return null;
 }
 
 export default function Auth() {
+  const { t } = useTranslation();
   const { user, isConfigured, signIn, signUp, resetPassword, signInDemo } =
     useAuth();
+  const showError = (msg: string) => {
+    const k = errorKey(msg);
+    setError(k ? t(`auth.${k}`) : msg);
+  };
   const navigate = useNavigate();
   const location = useLocation();
   const navState = location.state as { from?: string; mode?: Mode } | null;
@@ -68,12 +72,11 @@ export default function Auth() {
 
   /** Validation côté client avant appel. */
   function validate(): string | null {
-    if (!EMAIL_RE.test(email.trim())) return 'Veuillez saisir un email valide.';
+    if (!EMAIL_RE.test(email.trim())) return t('auth.errInvalidEmail');
     if (mode !== 'forgot') {
-      if (password.length < 6)
-        return 'Le mot de passe doit faire au moins 6 caractères.';
+      if (password.length < 6) return t('auth.errPasswordShort');
       if (mode === 'signup' && password !== confirm)
-        return 'Les mots de passe ne correspondent pas.';
+        return t('auth.errPasswordMismatch');
     }
     return null;
   }
@@ -92,14 +95,10 @@ export default function Auth() {
 
     // ── Réinitialisation du mot de passe
     if (mode === 'forgot') {
-      const { error: err, demo } = await resetPassword(email);
+      const { error: err } = await resetPassword(email);
       setSubmitting(false);
-      if (err) return setError(translateError(err));
-      setInfo(
-        demo
-          ? 'En mode démo, aucun email n’est envoyé. Vous pouvez recréer un compte directement.'
-          : 'Email de réinitialisation envoyé. Vérifiez votre boîte de réception.',
-      );
+      if (err) return showError(err);
+      setInfo(t('auth.resetSent'));
       return;
     }
 
@@ -107,28 +106,26 @@ export default function Auth() {
     const action = mode === 'signin' ? signIn : signUp;
     const { error: err } = await action(email.trim(), password);
     setSubmitting(false);
-    if (err) return setError(translateError(err));
+    if (err) return showError(err);
 
     if (mode === 'signup' && isConfigured) {
-      setInfo(
-        'Compte créé ! Si la confirmation par email est activée, vérifiez votre boîte de réception.',
-      );
+      setInfo(t('auth.createdInfo'));
     }
     // Sinon : la redirection se fait via l'effet (session établie).
   }
 
   const title =
     mode === 'signin'
-      ? 'Bon retour'
+      ? t('auth.titleSignin')
       : mode === 'signup'
-        ? 'Créer un compte'
-        : 'Mot de passe oublié';
+        ? t('auth.titleSignup')
+        : t('auth.titleForgot');
   const subtitle =
     mode === 'signin'
-      ? 'Connectez-vous pour retrouver vos analyses.'
+      ? t('auth.subtitleSignin')
       : mode === 'signup'
-        ? 'Quelques secondes pour commencer en douceur.'
-        : 'Recevez un lien pour réinitialiser votre mot de passe.';
+        ? t('auth.subtitleSignup')
+        : t('auth.subtitleForgot');
 
   const pwToggle = (
     <button
@@ -145,9 +142,12 @@ export default function Auth() {
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-10">
       <AuroraBackground />
 
-      <Link to="/" className="mb-8">
-        <Logo />
-      </Link>
+      <div className="mb-8 flex flex-col items-center gap-3">
+        <Link to="/">
+          <Logo />
+        </Link>
+        <LanguageSwitcher />
+      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -174,7 +174,7 @@ export default function Auth() {
                     : 'text-sage-500 hover:text-sage-700'
                 }`}
               >
-                {m === 'signin' ? 'Connexion' : 'Inscription'}
+                {m === 'signin' ? t('auth.signin') : t('auth.signup')}
               </button>
             ))}
           </div>
@@ -184,7 +184,7 @@ export default function Auth() {
           <Input
             id="email"
             type="email"
-            label="Email"
+            label={t('auth.email')}
             placeholder="vous@exemple.com"
             icon={<Mail className="h-4 w-4" />}
             value={email}
@@ -197,7 +197,7 @@ export default function Auth() {
             <Input
               id="password"
               type={showPw ? 'text' : 'password'}
-              label="Mot de passe"
+              label={t('auth.password')}
               placeholder="••••••••"
               icon={<Lock className="h-4 w-4" />}
               trailing={pwToggle}
@@ -215,7 +215,7 @@ export default function Auth() {
             <Input
               id="confirm"
               type={showPw ? 'text' : 'password'}
-              label="Confirmer le mot de passe"
+              label={t('auth.confirm')}
               placeholder="••••••••"
               icon={<Lock className="h-4 w-4" />}
               value={confirm}
@@ -232,7 +232,7 @@ export default function Auth() {
                 onClick={() => switchMode('forgot')}
                 className="text-xs font-medium text-sage-500 hover:text-sage-700"
               >
-                Mot de passe oublié ?
+                {t('auth.forgot')}
               </button>
             </div>
           )}
@@ -250,12 +250,12 @@ export default function Auth() {
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting
-              ? 'Un instant…'
+              ? t('auth.submitting')
               : mode === 'signin'
-                ? 'Se connecter'
+                ? t('auth.submitSignin')
                 : mode === 'signup'
-                  ? 'Créer mon compte'
-                  : 'Envoyer le lien'}
+                  ? t('auth.submitSignup')
+                  : t('auth.submitForgot')}
             {!submitting && <ArrowRight className="h-4 w-4" />}
           </Button>
         </form>
@@ -268,7 +268,7 @@ export default function Auth() {
             className="mt-4 inline-flex w-full items-center justify-center gap-1.5 text-sm font-medium text-sage-500 hover:text-sage-700"
           >
             <ArrowLeft className="h-4 w-4" />
-            Retour à la connexion
+            {t('auth.backToSignin')}
           </button>
         )}
 
@@ -287,7 +287,7 @@ export default function Auth() {
               onClick={signInDemo}
             >
               <Sparkles className="h-4 w-4" />
-              Continuer en invité
+              {t('auth.guest')}
             </Button>
             <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-sage-400">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />

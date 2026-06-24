@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './hooks/useAuth';
 import { ProfileProvider } from './hooks/useProfile';
 import { ScanSessionProvider } from './hooks/useScanSession';
+import { LanguageSync } from './components/common/LanguageSync';
 import { router } from './router';
 
 /** Capture un éventuel code promo dans l'URL (glow.app/?code=MIKE15). */
@@ -34,6 +35,7 @@ export default function App() {
       <AuthProvider>
         <ProfileProvider>
           <ScanSessionProvider>
+            <LanguageSync />
             <RouterProvider router={router} />
           </ScanSessionProvider>
         </ProfileProvider>

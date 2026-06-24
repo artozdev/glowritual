@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, ShieldAlert, RefreshCw } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { useProfile } from '@/hooks/useProfile';
 import {
   SKIN_TYPE_OPTIONS,
@@ -57,14 +59,15 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 export function ProfilePreferences() {
   const { profile, update } = useProfile();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const allergenActive = (tokens: string[]) =>
-    tokens.every((t) => profile.allergies.includes(t));
+    tokens.every((tok) => profile.allergies.includes(tok));
 
   const toggleAllergen = (tokens: string[]) => {
     const set = new Set(profile.allergies);
     const active = allergenActive(tokens);
-    tokens.forEach((t) => (active ? set.delete(t) : set.add(t)));
+    tokens.forEach((tok) => (active ? set.delete(tok) : set.add(tok)));
     update({ allergies: [...set] });
   };
 
@@ -73,7 +76,7 @@ export function ProfilePreferences() {
       <div className="flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 font-semibold text-sage-900">
           <Sparkles className="h-4 w-4 text-sage-500" />
-          Mes préférences
+          {t('settings.title')}
         </h2>
         <button
           type="button"
@@ -81,21 +84,25 @@ export function ProfilePreferences() {
           className="inline-flex items-center gap-1.5 text-xs font-medium text-sage-500 hover:text-sage-700"
         >
           <RefreshCw className="h-3.5 w-3.5" />
-          Refaire le questionnaire
+          {t('settings.retake')}
         </button>
       </div>
 
       <div className="mt-5 space-y-5">
-        <Field label="Comment vous appeler ?">
+        <Field label={t('settings.language')}>
+          <LanguageSwitcher />
+        </Field>
+
+        <Field label={t('settings.name')}>
           <Input
             id="displayName"
             value={profile.displayName}
             onChange={(e) => update({ displayName: e.target.value })}
-            placeholder="Votre prénom"
+            placeholder="Léa"
           />
         </Field>
 
-        <Field label="Type de peau">
+        <Field label={t('settings.skinType')}>
           <Pills
             value={profile.skinType}
             options={SKIN_TYPE_OPTIONS}
@@ -103,7 +110,7 @@ export function ProfilePreferences() {
           />
         </Field>
 
-        <Field label="Préférence produits">
+        <Field label={t('settings.productPref')}>
           <Pills
             value={profile.productPref}
             options={PRODUCT_PREF_OPTIONS}
@@ -111,19 +118,18 @@ export function ProfilePreferences() {
           />
         </Field>
 
-        <Field label="Produits affichés (genre)">
+        <Field label={t('settings.productGender')}>
           <Pills
             value={effectiveProductGender(profile)}
             options={PRODUCT_GENDER_OPTIONS}
             onChange={(v) => update({ productGenderPref: v })}
           />
           <p className="mt-2 text-xs text-sage-400">
-            Par défaut selon votre genre. « Mixte » affiche tout, « Neutres » les
-            produits universels uniquement.
+            {t('settings.productGenderHint')}
           </p>
         </Field>
 
-        <Field label="Allergies / ingrédients à éviter">
+        <Field label={t('settings.allergies')}>
           <div className="flex flex-wrap gap-2">
             {ALLERGEN_OPTIONS.map((a) => {
               const active = allergenActive(a.tokens);
@@ -146,7 +152,7 @@ export function ProfilePreferences() {
             })}
           </div>
           <p className="mt-2 text-xs text-sage-400">
-            Les produits contenant ces ingrédients seront strictement exclus.
+            {t('settings.allergiesHint')}
           </p>
         </Field>
       </div>

@@ -47,6 +47,7 @@ export interface Database {
           product_pref: string | null;
           budget: string | null;
           product_gender_pref: string | null;
+          language: string | null;
         };
         Insert: {
           id: string;
@@ -72,6 +73,7 @@ export interface Database {
           product_pref?: string | null;
           budget?: string | null;
           product_gender_pref?: string | null;
+          language?: string | null;
         };
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
         Relationships: [];
