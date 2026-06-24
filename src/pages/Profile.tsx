@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   LogOut,
   Sparkles,
@@ -27,6 +28,7 @@ export default function Profile() {
   const { profile, reset } = useProfile();
   const { clearAll } = useScanSession();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -67,9 +69,9 @@ export default function Profile() {
   return (
     <div className="mx-auto max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight text-sage-900">
-        Mon profil
+        {t('profile.title')}
       </h1>
-      <p className="mt-1 text-sage-600">Votre compte et vos préférences.</p>
+      <p className="mt-1 text-sage-600">{t('profile.subtitle')}</p>
 
       {/* Identité */}
       <Card className="mt-6 p-5">
@@ -94,10 +96,10 @@ export default function Profile() {
               >
                 {isPremium ? (
                   <>
-                    <Crown className="h-3 w-3" /> Premium
+                    <Crown className="h-3 w-3" /> {t('profile.premium')}
                   </>
                 ) : (
-                  'Offre gratuite'
+                  t('profile.free')
                 )}
               </span>
               {user?.isDemo && (
@@ -138,7 +140,7 @@ export default function Profile() {
         <Card className="mt-4 p-5">
           <h2 className="flex items-center gap-2 font-semibold text-sage-900">
             <Crown className="h-4 w-4 text-gold" />
-            Mon abonnement
+            {t('profile.subscriptionTitle')}
           </h2>
           <p className="mt-1.5 text-sm text-sage-600">
             Vous êtes Premium ✨ Gérez votre formule, votre moyen de paiement ou
@@ -150,7 +152,7 @@ export default function Profile() {
             onClick={handleManageSubscription}
             disabled={portalBusy}
           >
-            {portalBusy ? 'Ouverture…' : 'Gérer mon abonnement'}
+            {portalBusy ? t('common.loading') : t('profile.manage')}
           </Button>
           {portalError && (
             <p className="mt-2 text-xs text-red-500">{portalError}</p>
@@ -169,7 +171,7 @@ export default function Profile() {
               </p>
             </div>
             <Link to="/pricing">
-              <Button size="sm">Découvrir</Button>
+              <Button size="sm">{t('profile.discover')}</Button>
             </Link>
           </div>
         </Card>
@@ -216,7 +218,7 @@ export default function Profile() {
         onClick={handleSignOut}
       >
         <LogOut className="h-4 w-4" />
-        Se déconnecter
+        {t('profile.logout')}
       </Button>
 
       <MedicalDisclaimer className="mt-6" compact />

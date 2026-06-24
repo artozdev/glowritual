@@ -43,6 +43,7 @@ export function rowToProfile(row: Partial<ProfileRow>): Partial<UserProfile> {
   if (row.budget) p.budget = row.budget as UserProfile['budget'];
   if (row.product_gender_pref)
     p.productGenderPref = row.product_gender_pref as UserProfile['productGenderPref'];
+  if (row.language) p.language = row.language as UserProfile['language'];
   return p;
 }
 
@@ -67,6 +68,7 @@ export function profileToRow(profile: UserProfile): ProfileUpdate {
     product_pref: profile.productPref,
     budget: profile.budget,
     product_gender_pref: profile.productGenderPref ?? null,
+    language: profile.language ?? null,
   };
 }
 

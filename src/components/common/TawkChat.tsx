@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { MessageCircle } from 'lucide-react';
 
 /**
@@ -86,6 +87,7 @@ function FounderAvatar({ size = 48 }: { size?: number }) {
 }
 
 export function TawkChat() {
+  const { t } = useTranslation();
   useEffect(() => {
     loadTawk();
   }, []);
@@ -109,15 +111,15 @@ export function TawkChat() {
           <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
         </span>
         <span className="min-w-0">
-          <span className="block text-sm font-bold text-forest">Arthur</span>
-          <span className="block text-xs text-forest/60">Fondateur de Glow</span>
+          <span className="block text-sm font-bold text-forest">{t('chat.name')}</span>
+          <span className="block text-xs text-forest/60">{t('chat.role')}</span>
           <span className="mt-0.5 flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            En ligne
+            {t('chat.online')}
           </span>
         </span>
         <span className="ml-1 shrink-0 rounded-full bg-forest px-3.5 py-2 text-xs font-semibold text-sand shadow-soft">
-          Contactez-nous
+          {t('chat.cta')}
         </span>
       </button>
 

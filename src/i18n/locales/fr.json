@@ -1,0 +1,161 @@
+{
+  "common": {
+    "back": "Retour",
+    "loading": "Chargement…",
+    "soon": "Bientôt",
+    "close": "Fermer"
+  },
+  "nav": {
+    "scan": "Scan",
+    "routine": "Routine",
+    "progress": "Évolution",
+    "profile": "Profil"
+  },
+  "lang": {
+    "label": "Langue",
+    "fr": "Français",
+    "en": "English"
+  },
+  "header": {
+    "features": "Fonctionnalités",
+    "why": "Pourquoi Glow",
+    "reviews": "Avis",
+    "ctaStart": "Commencer gratuitement",
+    "login": "Se connecter"
+  },
+  "hero": {
+    "badge": "Adoré par +{{count}} utilisateurs",
+    "titleLine1": "Révèle ton glow",
+    "titleLine2": "naturel.",
+    "subtitle": "Scanne ton visage avec l’IA et reçois une routine sur-mesure avec des produits 100 % naturels. Plus beau, plus sain — sans chirurgie, sans risque.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Se connecter",
+    "perks": ["Premier scan gratuit", "Sans carte bancaire", "100 % naturel"]
+  },
+  "beforeAfter": {
+    "eyebrow": "Des résultats visibles, naturellement",
+    "title": "Ton meilleur toi, sans bistouri.",
+    "body": "Glow analyse chaque zone de ta peau, identifie ce qui peut être sublimé, et te guide avec des soins naturels. Le résultat : une peau plus douce, plus nette et plus lumineuse — naturellement. Glisse pour voir la différence.",
+    "disclaimer": "Résultats illustratifs. Ils varient selon chaque personne et la régularité de la routine."
+  },
+  "impact": {
+    "eyebrow": "L’impact de Glow sur toi",
+    "title": "Prendre soin de soi change tout",
+    "tabs": {
+      "confidence": "Confiance",
+      "skin": "Peau",
+      "habits": "Habitudes",
+      "wellbeing": "Bien-être"
+    },
+    "benefits": {
+      "confidence": [
+        { "accent": "Plus", "rest": "de confiance", "text": "Prendre soin de sa peau et voir ses progrès renforce l’estime de soi au quotidien." },
+        { "accent": "Moins", "rest": "de complexes", "text": "Comprendre sa peau et savoir quoi faire apaise l’anxiété liée à l’apparence." },
+        { "accent": "Une", "rest": "fierté personnelle", "text": "Tenir sa routine et constater les résultats procure un vrai sentiment d’accomplissement." }
+      ],
+      "skin": [
+        { "accent": "Une", "rest": "peau plus saine", "text": "Une routine régulière et adaptée améliore visiblement l’éclat et la qualité de la peau." },
+        { "accent": "Des", "rest": "gestes adaptés", "text": "Fini les produits au hasard : chaque recommandation est ciblée sur tes besoins réels." },
+        { "accent": "Du", "rest": "naturel, sans risque", "text": "Uniquement des produits sains, sans substances agressives pour ta peau." }
+      ],
+      "habits": [
+        { "accent": "Une", "rest": "routine qui tient", "text": "Glow transforme le soin en habitude simple, suivie jour après jour." },
+        { "accent": "Du", "rest": "suivi motivant", "text": "Voir sa progression dans le temps donne envie de continuer." },
+        { "accent": "Moins", "rest": "de charge mentale", "text": "L’app décide quoi faire et quand, tu n’as plus à y penser." }
+      ],
+      "wellbeing": [
+        { "accent": "Un", "rest": "rituel pour soi", "text": "Un moment quotidien de soin, rien que pour toi, qui fait du bien au moral." },
+        { "accent": "Une", "rest": "approche globale", "text": "Peau, sommeil, hydratation, stress : Glow prend soin de toi en entier." },
+        { "accent": "Du", "rest": "positif, pas de pression", "text": "Une démarche bienveillante, axée progrès personnel et jamais jugement." }
+      ]
+    }
+  },
+  "testimonials": {
+    "title": "Ils ont retrouvé confiance.",
+    "social": "Déjà adopté par +{{count}} utilisateurs",
+    "socialNote": "au lancement de Glow",
+    "community": "Une communauté qui rayonne au naturel.",
+    "items": [
+      { "name": "Léa M.", "quote": "En 3 semaines ma peau est métamorphosée. Les conseils sont précis et 100 % naturels, j’adore." },
+      { "name": "Thomas R.", "quote": "Enfin une app qui me dit quoi faire au lieu de me vendre n’importe quoi. Ma routine est suivie au quotidien." },
+      { "name": "Inès B.", "quote": "Le scan est hyper précis et les produits recommandés sont top. Mon teint n’a jamais été aussi lumineux." },
+      { "name": "Karim D.", "quote": "Je suivais 0 routine avant. Maintenant c’est devenu un réflexe et les résultats se voient." },
+      { "name": "Sarah L.", "quote": "L’avant/après sur mon propre visage m’a motivée à fond. Bluffant et naturel." }
+    ]
+  },
+  "finalCta": {
+    "badge": "Ton glow up commence ici",
+    "title": "Commence ton glow up dès aujourd’hui.",
+    "subtitle": "Ton premier scan est gratuit. Découvre ton potentiel en 30 secondes.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Se connecter",
+    "note": "Sans engagement · Annulable à tout moment."
+  },
+  "footer": {
+    "tagline": "Ton glow naturel, guidé par l’IA.",
+    "legalTitle": "Légal",
+    "legalNotice": "Mentions légales",
+    "terms": "CGU",
+    "privacy": "Politique de Confidentialité",
+    "contact": "Contact",
+    "disclaimer": "Glow ne remplace pas l’avis d’un dermatologue ou d’un professionnel de santé.",
+    "copyright": "© {{year}} Glow · Avis et chiffres illustratifs."
+  },
+  "chat": {
+    "name": "Arthur",
+    "role": "Fondateur de Glow",
+    "online": "En ligne",
+    "cta": "Contactez-nous"
+  },
+  "auth": {
+    "signin": "Connexion",
+    "signup": "Inscription",
+    "titleSignin": "Bon retour",
+    "titleSignup": "Créer un compte",
+    "titleForgot": "Mot de passe oublié",
+    "subtitleSignin": "Connectez-vous pour retrouver vos analyses.",
+    "subtitleSignup": "Quelques secondes pour commencer en douceur.",
+    "subtitleForgot": "Recevez un lien pour réinitialiser votre mot de passe.",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirm": "Confirmer le mot de passe",
+    "forgot": "Mot de passe oublié ?",
+    "submitSignin": "Se connecter",
+    "submitSignup": "Créer mon compte",
+    "submitForgot": "Envoyer le lien",
+    "submitting": "Un instant…",
+    "backToSignin": "Retour à la connexion",
+    "guest": "Continuer en invité",
+    "createdInfo": "Compte créé ! Si la confirmation par email est activée, vérifiez votre boîte de réception.",
+    "resetSent": "Email de réinitialisation envoyé. Vérifiez votre boîte de réception.",
+    "errInvalidEmail": "Veuillez saisir un email valide.",
+    "errPasswordShort": "Le mot de passe doit faire au moins 6 caractères.",
+    "errPasswordMismatch": "Les mots de passe ne correspondent pas.",
+    "errInvalidLogin": "Email ou mot de passe incorrect.",
+    "errExists": "Un compte existe déjà avec cet email.",
+    "errNotConfirmed": "Confirmez votre email avant de vous connecter.",
+    "errRate": "Trop de tentatives, réessayez dans un instant."
+  },
+  "profile": {
+    "title": "Mon profil",
+    "subtitle": "Votre compte et vos préférences.",
+    "premium": "Premium",
+    "free": "Offre gratuite",
+    "subscriptionTitle": "Mon abonnement",
+    "manage": "Gérer mon abonnement",
+    "discover": "Découvrir",
+    "logout": "Se déconnecter"
+  },
+  "settings": {
+    "title": "Mes préférences",
+    "retake": "Refaire le questionnaire",
+    "name": "Comment vous appeler ?",
+    "language": "Langue / Language",
+    "skinType": "Type de peau",
+    "productPref": "Préférence produits",
+    "productGender": "Produits affichés (genre)",
+    "productGenderHint": "Par défaut selon votre genre. « Mixte » affiche tout, « Neutres » les produits universels uniquement.",
+    "allergies": "Allergies / ingrédients à éviter",
+    "allergiesHint": "Les produits contenant ces ingrédients seront strictement exclus."
+  }
+}
