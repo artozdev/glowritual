@@ -40,6 +40,24 @@
     "after": "Après",
     "disclaimer": "Résultats illustratifs, variables selon chaque personne et la régularité de la routine."
   },
+  "process": {
+    "eyebrow": "Notre approche",
+    "title": "Ton [glow] en 3 étapes",
+    "steps": [
+      {
+        "title": "Scanne ton visage, zone par zone",
+        "text": "Tu scannes chaque partie de ton visage avec ta caméra. L’IA capture précisément chaque zone pour une analyse fiable."
+      },
+      {
+        "title": "Évaluation de ta peau",
+        "text": "Glow évalue la qualité de ta peau : hydratation, éclat, teint, cernes, texture, imperfections, densité des sourcils, et plus encore. Chaque zone reçoit un score et une explication claire."
+      },
+      {
+        "title": "Ton plan personnalisé",
+        "text": "Tu reçois un plan qui met en avant tes points forts, tes axes d’amélioration et les meilleures façons de sublimer ta peau — avec des produits 100 % naturels et une routine sur-mesure."
+      }
+    ]
+  },
   "compare": {
     "title": "Une nouvelle façon de [prendre soin de toi]",
     "subtitle": "Fini les produits au hasard et les routines qu’on abandonne. Glow t’accompagne, étape par étape, vers une peau plus saine — naturellement.",

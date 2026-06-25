@@ -25,6 +25,16 @@ export const BEFORE_AFTER = {
   afterFallback: u('1503443207922-dff7d543fd0e', 900),
 };
 
+/**
+ * Portrait de la section « processus en 3 étapes » (homme, détouré).
+ * ⚠️ Place le PNG détouré fourni dans `public/img/process-portrait.png`.
+ * Tant qu'il est absent, un portrait Unsplash de repli s'affiche.
+ */
+export const PROCESS_PORTRAIT = {
+  primary: '/img/process-portrait.png',
+  fallback: u('1506794778202-cad84cf45f1d', 900),
+};
+
 /** Portraits pour les témoignages (avant/après par personne). */
 export const TESTIMONIAL_FACES = [
   u('1531123897727-8f129e1688ce', 500),

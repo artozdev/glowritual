@@ -40,6 +40,24 @@
     "after": "After",
     "disclaimer": "Illustrative results, varying from person to person and with how consistently you follow your routine."
   },
+  "process": {
+    "eyebrow": "Our approach",
+    "title": "Your [glow] in 3 steps",
+    "steps": [
+      {
+        "title": "Scan your face, area by area",
+        "text": "You scan every part of your face with your camera. The AI captures each area precisely for a reliable analysis."
+      },
+      {
+        "title": "Your skin assessment",
+        "text": "Glow assesses your skin quality: hydration, radiance, tone, dark circles, texture, blemishes, brow density, and more. Each area gets a score and a clear explanation."
+      },
+      {
+        "title": "Your personalized plan",
+        "text": "You get a plan that highlights your strengths, your areas to improve and the best ways to enhance your skin — with 100% natural products and a tailor-made routine."
+      }
+    ]
+  },
   "compare": {
     "title": "A new way to [care for yourself]",
     "subtitle": "No more random products and routines you give up on. Glow guides you, step by step, toward healthier skin — naturally.",

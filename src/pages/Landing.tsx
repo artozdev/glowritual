@@ -11,6 +11,7 @@ import { StarRating } from '@/components/landing/StarRating';
 import { AvatarStack } from '@/components/landing/AvatarStack';
 import { FaceScanVisual } from '@/components/landing/FaceScanVisual';
 import { BeforeAfterSlider } from '@/components/landing/BeforeAfterSlider';
+import { ProcessSteps } from '@/components/landing/ProcessSteps';
 import { CompareWays } from '@/components/landing/CompareWays';
 import { FeatureGrid } from '@/components/landing/FeatureGrid';
 import { TestimonialsCarousel, type Testimonial } from '@/components/landing/TestimonialsCarousel';
@@ -30,6 +31,7 @@ export default function Landing() {
       <FloatingNav />
       <Hero />
       <BeforeAfterSection />
+      <ProcessSteps />
       <CompareWays />
       <FeatureGrid />
       <TestimonialsSection />
