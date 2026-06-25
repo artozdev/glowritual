@@ -177,6 +177,7 @@
     "cta": "Contactez-nous"
   },
   "auth": {
+    "perks": ["Premier scan gratuit", "Sans carte bancaire", "100 % naturel"],
     "signin": "Connexion",
     "signup": "Inscription",
     "titleSignin": "Bon retour",

@@ -177,6 +177,7 @@
     "cta": "Contact us"
   },
   "auth": {
+    "perks": ["First scan free", "No credit card", "100% natural"],
     "signin": "Log in",
     "signup": "Sign up",
     "titleSignin": "Welcome back",

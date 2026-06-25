@@ -335,7 +335,7 @@ function Footer() {
       <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6">
         <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-xs">
-            <Logo className="h-8" />
+            <Logo tone="dark" />
             <p className="mt-4 text-sm text-white/60">{t('footer.tagline')}</p>
           </div>
 

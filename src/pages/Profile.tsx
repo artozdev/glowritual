@@ -212,14 +212,16 @@ export default function Profile() {
       </Card>
 
       {/* Déconnexion */}
-      <Button
-        variant="outline"
-        className="mt-4 w-full"
+      <button
+        type="button"
         onClick={handleSignOut}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2.5 rounded-2xl border border-sage-900/10 bg-white px-5 py-3.5 text-sm font-semibold text-sage-800 shadow-soft transition-all hover:border-sage-900/20 hover:bg-sage-50 active:scale-[0.98]"
       >
-        <LogOut className="h-4 w-4" />
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sage-100 text-sage-700">
+          <LogOut className="h-4 w-4" />
+        </span>
         {t('profile.logout')}
-      </Button>
+      </button>
 
       <MedicalDisclaimer className="mt-6" compact />
 
