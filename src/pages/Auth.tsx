@@ -159,7 +159,7 @@ export default function Auth() {
 
         <div className="relative max-w-md">
           <h2 className="text-balance text-4xl font-extrabold leading-[1.05] tracking-tight xl:text-5xl">
-            <Highlight text={t('hero.title')} />
+            <Highlight text={t('hero.title')} mutedClassName="text-white/45" />
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-white/70">
             {t('footer.tagline')}

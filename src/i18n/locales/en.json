@@ -24,13 +24,18 @@
     "cta": "Get started"
   },
   "hero": {
-    "badge": "New · Your glow, guided by AI",
-    "title": "Reveal your natural [glow]",
-    "subtitle": "Scan your face with AI and get a tailor-made, 100% natural routine. Healthier, more radiant — no surgery, no risk.",
-    "ctaPrimary": "Start for free",
-    "ctaSecondary": "Watch the demo",
+    "eyebrow": "Join the first Glow users",
+    "title": "Reveal your natural [glow], {no surgery}",
+    "subtitle": "Get your personalized skin analysis and a tailor-made, 100% natural routine, based on your real needs.",
+    "ctaPrimary": "Start my scan",
+    "ctaSecondary": "How it works",
     "social": "Loved by {{count}}+ users",
-    "rating": "4.9"
+    "rating": "4.9",
+    "items": [
+      { "title": "No surgery", "text": "Only gentle, natural methods" },
+      { "title": "100% natural", "text": "Clean products, no risky substances" },
+      { "title": "Care-first", "text": "Advice grounded in lifestyle and wellbeing" }
+    ]
   },
   "beforeAfter": {
     "eyebrow": "Visible results, naturally",

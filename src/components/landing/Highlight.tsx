@@ -2,33 +2,43 @@ import { Fragment } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Rend un titre dont le(s) mot(s)-clé(s) sont mis en accent (#85ff9c = sage-300,
- * couleur signature partagée avec l'app). La convention i18n place le mot accentué
- * entre crochets, ex. « Révèle ton [glow] naturel ». Une seule mécanique, qui gère
- * n'importe quelle position du mot dans la phrase et reste lisible côté traduction.
+ * Rend un titre dont certains mots sont mis en valeur. Convention i18n :
+ *  - `[mot]` → accent signature #85ff9c (sage-300)
+ *  - `{mot}` → atténué (gris/blanc plus léger), pour les nuances de titre
+ * Ex. « Révèle ton [glow] naturel, {sans chirurgie} ». Une seule mécanique,
+ * lisible côté traduction, qui gère n'importe quelle position des mots.
  */
 export function Highlight({
   text,
   className,
   accentClassName,
+  mutedClassName,
 }: {
   text: string;
   className?: string;
   accentClassName?: string;
+  mutedClassName?: string;
 }) {
-  // Découpe en segments alternés : texte normal / [accentué].
-  const parts = text.split(/\[(.+?)\]/g);
+  const tokens = text.split(/(\[[^\]]+\]|\{[^}]+\})/g);
   return (
     <span className={className}>
-      {parts.map((part, i) =>
-        i % 2 === 1 ? (
-          <span key={i} className={cn('text-sage-300', accentClassName)}>
-            {part}
-          </span>
-        ) : (
-          <Fragment key={i}>{part}</Fragment>
-        ),
-      )}
+      {tokens.map((tok, i) => {
+        if (tok.startsWith('[') && tok.endsWith(']')) {
+          return (
+            <span key={i} className={cn('text-sage-300', accentClassName)}>
+              {tok.slice(1, -1)}
+            </span>
+          );
+        }
+        if (tok.startsWith('{') && tok.endsWith('}')) {
+          return (
+            <span key={i} className={cn('text-neutral-400', mutedClassName)}>
+              {tok.slice(1, -1)}
+            </span>
+          );
+        }
+        return <Fragment key={i}>{tok}</Fragment>;
+      })}
     </span>
   );
 }

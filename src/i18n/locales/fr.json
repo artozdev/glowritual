@@ -24,13 +24,18 @@
     "cta": "Commencer"
   },
   "hero": {
-    "badge": "Nouveau · Ton glow, guidé par l’IA",
-    "title": "Révèle ton [glow] naturel",
-    "subtitle": "Scanne ton visage avec l’IA et reçois une routine sur-mesure, 100 % naturelle. Plus sain, plus lumineux — sans chirurgie, sans risque.",
-    "ctaPrimary": "Commencer gratuitement",
-    "ctaSecondary": "Voir la démo",
+    "eyebrow": "Rejoins les premiers utilisateurs de Glow",
+    "title": "Révèle ton [glow] naturel, {sans chirurgie}",
+    "subtitle": "Obtiens ton analyse de peau personnalisée et une routine sur-mesure, 100 % naturelle, basée sur tes besoins réels.",
+    "ctaPrimary": "Commencer mon scan",
+    "ctaSecondary": "Comment ça marche",
     "social": "Adoré par +{{count}} utilisateurs",
-    "rating": "4,9"
+    "rating": "4,9",
+    "items": [
+      { "title": "Sans chirurgie", "text": "Que des méthodes douces et naturelles" },
+      { "title": "100 % naturel", "text": "Des produits sains, sans substance à risque" },
+      { "title": "Fondé sur le soin", "text": "Des conseils basés sur l’hygiène de vie et le bien-être" }
+    ]
   },
   "beforeAfter": {
     "eyebrow": "Des résultats visibles, naturellement",

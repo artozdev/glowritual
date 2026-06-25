@@ -23,7 +23,10 @@ export function ProcessSteps() {
   const [active, setActive] = useState(0);
 
   return (
-    <section className="relative overflow-hidden bg-white py-20 sm:py-28">
+    <section
+      id="process"
+      className="relative scroll-mt-24 overflow-hidden bg-white py-20 sm:py-28"
+    >
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
         {/* En-tête */}
         <ScrollReveal className="text-center">

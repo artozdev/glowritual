@@ -26,6 +26,16 @@ export const BEFORE_AFTER = {
 };
 
 /**
+ * Image de fond plein écran du hero (portrait peau lumineuse, fond gris).
+ * ⚠️ Place l'image fournie dans `public/img/hero-bg.jpg`.
+ * Tant qu'elle est absente, un portrait Unsplash de repli s'affiche.
+ */
+export const HERO_BG = {
+  primary: '/img/hero-bg.jpg',
+  fallback: u('1544005313-94ddf0286df2', 1600),
+};
+
+/**
  * Portrait de la section « processus en 3 étapes » (homme, détouré).
  * ⚠️ Place le PNG détouré fourni dans `public/img/process-portrait.png`.
  * Tant qu'il est absent, un portrait Unsplash de repli s'affiche.
