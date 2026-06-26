@@ -16,8 +16,10 @@ export type FaceCriterionId =
   | 'firmness' // fermeté / relâchement
   | 'dark_circles' // cernes & poches
   | 'shine' // brillance / zone T
-  // — critères historiques conservés (non produits par le scan visage) —
-  | 'lip_brow_care'
+  | 'lip_brow_care' // lèvres & sourcils (soin)
+  | 'neck' // peau du cou (soin, estimé)
+  | 'hair_scalp' // cuir chevelu & cheveux (soin, estimé)
+  // — critère historique conservé (non produit par le scan visage) —
   | 'symmetry';
 
 export type BodyCriterionId = 'posture' | 'tone' | 'skin_hydration';
@@ -87,6 +89,31 @@ export interface ZoneSignal {
   evenness?: number;
 }
 
+/* ── Parcours de capture multi-angles ───────────────────────────── */
+
+/** Angle de prise de vue du parcours de capture multi-angles. */
+export type AngleId =
+  | 'face' // visage de face (validé par repères → alimente l'analyse skin)
+  | 'profile_left'
+  | 'profile_right'
+  | 'jaw' // mâchoire (3/4)
+  | 'smile'
+  | 'scalp'; // cuir chevelu / cheveux
+
+/** Photo capturée pour un angle (parcours multi-angles). */
+export interface AngleCapture {
+  id: AngleId;
+  /** Image (dataURL en local/démo, conservée légère). */
+  image: string | null;
+  /** Luminosité mesurée (0..1). */
+  brightness: number;
+  /** Netteté mesurée (0..1). */
+  sharpness: number;
+  /** Provenance de la photo. */
+  source: 'camera' | 'upload';
+  capturedAt: string; // ISO
+}
+
 /**
  * Conditions moyennes du scan — enregistrées pour guider l'utilisateur à
  * reproduire les mêmes conditions au scan suivant (comparaison fiable).
@@ -152,6 +179,8 @@ export interface StoredScan {
   createdAt: string; // ISO
   /** Captures par zone (parcours guidé multi-zones). */
   zones?: ScanZoneCapture[];
+  /** Photos du parcours multi-angles (face, profils, mâchoire, sourire, cuir chevelu). */
+  angles?: AngleCapture[];
   /** Conditions du scan (luminosité, distance) pour la cohérence dans le temps. */
   conditions?: ScanConditions;
   /** Scan d'amorçage (historique de démo) — exclu du quota freemium. */

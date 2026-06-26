@@ -49,6 +49,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        // Titres hero « premium » plus légers (poids 300/400)
+        montserrat: ['Montserrat', 'Inter', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.04em',

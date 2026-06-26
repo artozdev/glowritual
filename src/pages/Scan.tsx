@@ -5,9 +5,9 @@ import { Crown, Lock, ScanFace, Sparkles, Wand2, Lightbulb } from 'lucide-react'
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Sheet } from '@/components/ui/Sheet';
-import { GuidedScan, type GuidedScanResult } from '@/components/scan/GuidedScan';
+import { MultiAngleScan, type MultiAngleResult } from '@/components/scan/MultiAngleScan';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
-import { ZONE_STEPS } from '@/lib/scanZones';
+import { ANGLE_STEPS } from '@/lib/scanAngles';
 import { useScanSession } from '@/hooks/useScanSession';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
@@ -33,7 +33,7 @@ export default function Scan() {
   function buildAndSave(
     image: string | null,
     landmarks: NormalizedPoint[] | null,
-    result?: GuidedScanResult,
+    result?: MultiAngleResult,
   ) {
     const seed = landmarks
       ? seedFromLandmarks(landmarks)
@@ -56,12 +56,13 @@ export default function Scan() {
       createdAt: new Date().toISOString(),
       zones: result?.zones,
       conditions: result?.conditions,
+      angles: result?.angles,
     };
     saveScan(scan);
     navigate(`/results/${scan.id}`);
   }
 
-  function handleComplete(result: GuidedScanResult) {
+  function handleComplete(result: MultiAngleResult) {
     buildAndSave(result.image, result.landmarks, result);
   }
 
@@ -77,7 +78,7 @@ export default function Scan() {
   if (started) {
     return (
       <div className="mx-auto max-w-xl">
-        <GuidedScan onComplete={handleComplete} onExit={() => setStarted(false)} />
+        <MultiAngleScan onComplete={handleComplete} onExit={() => setStarted(false)} />
       </div>
     );
   }
@@ -89,12 +90,11 @@ export default function Scan() {
         <h1 className="text-2xl font-semibold tracking-tight text-sage-900">
           {profile.displayName
             ? `Prêt·e, ${profile.displayName} ?`
-            : 'Analyse guidée du visage'}
+            : 'Analyse multi-angles du visage'}
         </h1>
         <p className="mt-1.5 text-sage-600">
-          Un parcours étape par étape, zone par zone, pour une analyse précise.
-          Tout se passe sur votre appareil — vos photos ne quittent jamais le
-          téléphone.
+          Un parcours guidé, angle par angle, pour une analyse précise. Capture
+          chaque photo à la caméra ou importe-la — tout reste privé et chiffré.
         </p>
         <div className="mt-3 flex justify-center">
           {isPremium ? (
@@ -115,10 +115,10 @@ export default function Scan() {
       <div className="mt-6 rounded-3xl border border-beige-200 bg-white p-5 shadow-soft">
         <p className="flex items-center gap-2 text-sm font-semibold text-sage-900">
           <Wand2 className="h-4 w-4 text-sage-500" />
-          Les {ZONE_STEPS.length} étapes du scan
+          Les {ANGLE_STEPS.length} angles de l’analyse
         </p>
         <ol className="mt-3 grid gap-2">
-          {ZONE_STEPS.map((s, i) => (
+          {ANGLE_STEPS.map((s, i) => (
             <motion.li
               key={s.id}
               initial={{ opacity: 0, x: -8 }}
@@ -138,9 +138,9 @@ export default function Scan() {
         </ol>
         <p className="mt-3 flex items-start gap-2 rounded-2xl bg-sage-50 px-3 py-2.5 text-xs text-sage-600">
           <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sage-500" />
-          Placez-vous face à une source de lumière douce. Le cadre devient vert
-          quand la zone est bien positionnée : restez immobile, la capture est
-          automatique.
+          Place-toi face à une lumière douce. Pour le visage de face, le cadre
+          devient vert et la capture est automatique. Pour les autres angles,
+          prends la photo ou importe-la depuis ta galerie.
         </p>
       </div>
 
@@ -148,7 +148,7 @@ export default function Scan() {
       <div className="mt-6 flex flex-col items-center gap-3">
         <Button size="lg" className="w-full sm:w-auto" onClick={startScan}>
           <ScanFace className="h-5 w-5" />
-          Commencer le scan guidé
+          Commencer mon analyse
         </Button>
         <button
           type="button"

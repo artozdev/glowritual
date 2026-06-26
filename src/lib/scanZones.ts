@@ -129,6 +129,7 @@ export const CRITERION_ZONE: Partial<Record<CriterionId, ScanZoneId>> = {
   imperfections: 'nose',
   post_acne_marks: 'mouth',
   firmness: 'jaw',
+  lip_brow_care: 'mouth',
 };
 
 /** Boîte normalisée d'une zone à partir des repères (avec marge). */

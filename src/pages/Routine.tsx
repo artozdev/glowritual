@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { CalendarHeart, ScanFace, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -6,16 +7,22 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Badge } from '@/components/ui/Badge';
 import { WeekCalendar } from '@/components/routine/WeekCalendar';
 import { RoutineSection } from '@/components/routine/RoutineSection';
+import { ProtocolSection } from '@/components/routine/ProtocolSection';
 import { ReminderCard } from '@/components/routine/ReminderCard';
 import { MedicalDisclaimer } from '@/components/common/MedicalDisclaimer';
 import { useScanSession } from '@/hooks/useScanSession';
 import { useRoutine } from '@/hooks/useRoutine';
+import { buildProtocol } from '@/lib/protocol';
 import { formatDate } from '@/lib/utils';
 
 export default function Routine() {
   const { latest } = useScanSession();
   const { grouped, isDone, toggle, completed, total, progress } =
     useRoutine(latest);
+  const protocol = useMemo(
+    () => (latest ? buildProtocol(latest.analysis) : []),
+    [latest],
+  );
 
   // Aucun scan → on invite à en faire un (la routine en découle).
   if (!latest) {
@@ -89,8 +96,13 @@ export default function Routine() {
         )}
       </Card>
 
+      {/* Protocole personnalisé — par zone & priorité */}
+      <div className="mt-8">
+        <ProtocolSection items={protocol} />
+      </div>
+
       {/* Sections de routine */}
-      <div className="mt-6 space-y-6">
+      <div className="mt-8 space-y-6">
         <RoutineSection
           period="morning"
           tasks={grouped.morning}

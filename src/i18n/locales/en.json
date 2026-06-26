@@ -24,17 +24,17 @@
     "cta": "Get started"
   },
   "hero": {
-    "eyebrow": "Join the first Glow users",
-    "title": "Reveal your natural [glow], {no surgery}",
-    "subtitle": "Get your personalized skin analysis and a tailor-made, 100% natural routine, based on your real needs.",
+    "eyebrow": "Join {{count}}+ people",
+    "title": "Reveal your natural [glow]",
+    "subtitle": "Your personalized skin analysis and your 100% natural routine.",
     "ctaPrimary": "Start my scan",
     "ctaSecondary": "How it works",
     "social": "Loved by {{count}}+ users",
     "rating": "4.9",
     "items": [
-      { "title": "No surgery", "text": "Only gentle, natural methods" },
-      { "title": "100% natural", "text": "Clean products, no risky substances" },
-      { "title": "Care-first", "text": "Advice grounded in lifestyle and wellbeing" }
+      { "title": "No surgery", "text": "Gentle, natural methods" },
+      { "title": "100% natural", "text": "Clean products, no risk" },
+      { "title": "Care-first", "text": "Skincare & wellbeing tips" }
     ]
   },
   "beforeAfter": {

@@ -144,6 +144,27 @@ export const FACE_CONTENT: Record<FaceCriterionId, CriterionContent> = {
     recommendation:
       'Nettoyant doux, niacinamide/zinc pour réguler le sébum, et une hydratation légère (sur-décaper aggrave la brillance).',
   },
+
+  /* ── Soin par zone (estimé, méthodes naturelles) — Phase 2 ──────── */
+  neck: {
+    label: 'Peau du cou',
+    short: 'Cou',
+    position: { x: 0.5, y: 0.95 },
+    good: 'La peau de votre cou paraît souple et tonique.',
+    nurture:
+      'La peau du cou est fine et souvent oubliée — un peu de soin la sublime.',
+    recommendation:
+      'Prolongez votre soin visage jusqu’au cou (hydratant + SPF) et faites un léger massage ascendant (gua sha) pour la tonicité.',
+  },
+  hair_scalp: {
+    label: 'Cuir chevelu & cheveux',
+    short: 'Cheveux',
+    position: { x: 0.5, y: 0.05 },
+    good: 'Cuir chevelu et cheveux paraissent sains.',
+    nurture: 'Un cuir chevelu apaisé et nourri donne des cheveux plus forts.',
+    recommendation:
+      'Massez le cuir chevelu 2 min/jour (microcirculation), espacez les shampooings, limitez la chaleur et privilégiez une alimentation riche en protéines et oméga-3.',
+  },
 };
 
 export const BODY_CONTENT: Record<BodyCriterionId, CriterionContent> = {

@@ -48,6 +48,10 @@ const FACE_ORDER: FaceCriterionId[] = [
   'firmness',
   'dark_circles',
   'shine',
+  // Critères de soin par zone (estimés, pondérés profil) — Phase 2.
+  'lip_brow_care',
+  'neck',
+  'hair_scalp',
 ];
 
 const BODY_ORDER: BodyCriterionId[] = ['posture', 'tone', 'skin_hydration'];
@@ -65,6 +69,8 @@ const CRITERION_NEED: Record<CriterionId, ProductNeed> = {
   dark_circles: 'eye_care',
   shine: 'mattifying',
   lip_brow_care: 'lip_brow_care',
+  neck: 'firmness',
+  hair_scalp: 'hair',
   symmetry: 'firmness',
   posture: 'posture_wellness',
   tone: 'body_firmness',
@@ -297,6 +303,14 @@ function personalizeHeuristic(
   if (id === 'post_acne_marks' && !isDeclaredConcern('imperfections', profile)) {
     s += 6; // sinon, on reste très positif (rien d'observé)
   }
+
+  // Soin par zone (estimé) — corrélations douces et défendables.
+  if (id === 'neck') {
+    if (profile.ageBand === '36to45') s -= 5;
+    if (profile.ageBand === 'over45') s -= 9;
+  }
+  if (id === 'hair_scalp' && profile.stress === 'high') s -= 4;
+  if (id === 'lip_brow_care' && profile.skinType === 'dry') s -= 4;
 
   return clamp(Math.round(s), 50, 99);
 }

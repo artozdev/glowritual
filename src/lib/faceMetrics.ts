@@ -157,48 +157,108 @@ export function sampleRegion(
     } else {
       ctx.drawImage(video, 0, 0, W, H);
     }
-    const { data } = ctx.getImageData(0, 0, W, H);
-
-    // Luma par pixel (réutilisée pour luminosité, gradient et homogénéité).
-    const luma = new Float32Array(W * H);
-    let sum = 0;
-    for (let p = 0; p < W * H; p++) {
-      const i = p * 4;
-      const y =
-        0.299 * (data[i] ?? 0) +
-        0.587 * (data[i + 1] ?? 0) +
-        0.114 * (data[i + 2] ?? 0);
-      luma[p] = y;
-      sum += y;
-    }
-    const mean = sum / (W * H);
-    const brightness = mean / 255;
-
-    // Gradient (voisins droite + bas) → mesure de mise au point / texture.
-    let acc = 0;
-    let count = 0;
-    for (let y = 0; y < H - 1; y++) {
-      for (let x = 0; x < W - 1; x++) {
-        const p = y * W + x;
-        const dx = luma[p + 1]! - luma[p]!;
-        const dy = luma[p + W]! - luma[p]!;
-        acc += dx * dx + dy * dy;
-        count++;
-      }
-    }
-    const grad = count ? Math.sqrt(acc / count) / 255 : 0; // ~0..0.15
-    const sharpness = clamp01(grad / 0.08); // calibré : 0.08 ≈ net
-
-    // Homogénéité du teint : faible écart-type de luma = teint uniforme.
-    let varSum = 0;
-    for (let p = 0; p < W * H; p++) varSum += (luma[p]! - mean) ** 2;
-    const std = Math.sqrt(varSum / (W * H)); // 0..~80
-    const evenness = clamp01(1 - std / 70);
-
-    return { brightness, sharpness, evenness };
+    return computeSignals(ctx.getImageData(0, 0, W, H).data, W, H);
   } catch {
     return FALLBACK;
   }
+}
+
+/** Luminosité + netteté + homogénéité à partir d'un buffer RGBA (W×H). */
+function computeSignals(
+  data: Uint8ClampedArray,
+  W: number,
+  H: number,
+): { brightness: number; sharpness: number; evenness: number } {
+  // Luma par pixel (réutilisée pour luminosité, gradient et homogénéité).
+  const luma = new Float32Array(W * H);
+  let sum = 0;
+  for (let p = 0; p < W * H; p++) {
+    const i = p * 4;
+    const y =
+      0.299 * (data[i] ?? 0) +
+      0.587 * (data[i + 1] ?? 0) +
+      0.114 * (data[i + 2] ?? 0);
+    luma[p] = y;
+    sum += y;
+  }
+  const mean = sum / (W * H);
+  const brightness = mean / 255;
+
+  // Gradient (voisins droite + bas) → mesure de mise au point / texture.
+  let acc = 0;
+  let count = 0;
+  for (let y = 0; y < H - 1; y++) {
+    for (let x = 0; x < W - 1; x++) {
+      const p = y * W + x;
+      const dx = luma[p + 1]! - luma[p]!;
+      const dy = luma[p + W]! - luma[p]!;
+      acc += dx * dx + dy * dy;
+      count++;
+    }
+  }
+  const grad = count ? Math.sqrt(acc / count) / 255 : 0; // ~0..0.15
+  const sharpness = clamp01(grad / 0.08); // calibré : 0.08 ≈ net
+
+  // Homogénéité du teint : faible écart-type de luma = teint uniforme.
+  let varSum = 0;
+  for (let p = 0; p < W * H; p++) varSum += (luma[p]! - mean) ** 2;
+  const std = Math.sqrt(varSum / (W * H)); // 0..~80
+  const evenness = clamp01(1 - std / 70);
+
+  return { brightness, sharpness, evenness };
+}
+
+const STILL_FALLBACK = { brightness: 0.5, sharpness: 0.5, evenness: 0.7 };
+
+/** Qualité d'une image figée (dataURL) : luminosité, netteté, homogénéité. */
+export function sampleStill(
+  dataUrl: string,
+): Promise<{ brightness: number; sharpness: number; evenness: number }> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const W = 48;
+        const H = 48;
+        const canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) return resolve(STILL_FALLBACK);
+        ctx.drawImage(img, 0, 0, W, H);
+        resolve(computeSignals(ctx.getImageData(0, 0, W, H).data, W, H));
+      } catch {
+        resolve(STILL_FALLBACK);
+      }
+    };
+    img.onerror = () => resolve(STILL_FALLBACK);
+    img.src = dataUrl;
+  });
+}
+
+/** Réduit une image (dataURL) à `max` px sur son plus grand côté (JPEG léger). */
+export function shrinkImage(dataUrl: string, max = 640): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(dataUrl);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      } catch {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
 }
 
 function clamp01(v: number): number {

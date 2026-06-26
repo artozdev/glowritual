@@ -51,7 +51,7 @@ function FloatingNav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -63,35 +63,57 @@ function FloatingNav() {
     { href: '#avis', label: t('header.reviews') },
   ];
 
+  // En haut : barre transparente et large (texte blanc sur le hero sombre).
+  // Au scroll : pilule blanche rétrécie (texte foncé).
+  const linkClass = cn(
+    'transition-colors',
+    scrolled ? 'text-ink/70 hover:text-ink' : 'text-white/80 hover:text-white',
+  );
+
   return (
-    <div className="fixed inset-x-0 top-3 z-50 flex justify-center px-4 sm:top-4">
+    <div
+      className={cn(
+        'fixed inset-x-0 top-0 z-50 flex justify-center transition-all duration-300',
+        scrolled ? 'px-4 pt-3' : 'px-0 pt-0',
+      )}
+    >
       <nav
         className={cn(
-          'flex w-full max-w-4xl items-center justify-between gap-4 rounded-full border border-ink/10 py-2 pl-5 pr-2 backdrop-blur-xl transition-all duration-300',
+          'flex w-full items-center justify-between gap-4 border transition-all duration-300',
           scrolled
-            ? 'bg-white/85 shadow-[0_10px_40px_-16px_rgba(0,0,0,0.35)]'
-            : 'bg-white/65',
+            ? 'max-w-5xl rounded-full border-ink/10 bg-white/85 px-4 py-2 pl-5 shadow-[0_10px_40px_-16px_rgba(0,0,0,0.35)] backdrop-blur-xl'
+            : 'max-w-7xl rounded-none border-transparent bg-transparent px-6 py-5',
         )}
       >
         <a href="#top" aria-label="Glow" className="shrink-0">
-          <Logo className="h-7" />
+          <Logo tone={scrolled ? 'image' : 'dark'} className="h-7" />
         </a>
 
-        <div className="hidden items-center gap-7 text-sm font-medium text-ink/70 md:flex">
+        <div className="hidden items-center gap-7 text-sm font-medium md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="transition-colors hover:text-ink">
+            <a key={l.href} href={l.href} className={linkClass}>
               {l.label}
             </a>
           ))}
-          <Link to="/pricing" className="transition-colors hover:text-ink">
+          <Link to="/pricing" className={linkClass}>
             {t('header.pricing')}
           </Link>
         </div>
 
         <div className="flex items-center gap-2">
-          <LanguageSwitcher className="hidden sm:inline-flex" />
+          <LanguageSwitcher
+            tone={scrolled ? 'light' : 'dark'}
+            className="hidden sm:inline-flex"
+          />
           <Link to="/auth" state={SIGNUP_STATE}>
-            <button className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98]">
+            <button
+              className={cn(
+                'rounded-full px-5 py-2.5 text-sm font-semibold transition-all active:scale-[0.98]',
+                scrolled
+                  ? 'bg-ink text-white hover:bg-ink-800'
+                  : 'bg-white text-ink hover:bg-white/90',
+              )}
+            >
               {t('header.cta')}
             </button>
           </Link>
@@ -142,21 +164,21 @@ function Hero() {
             className="flex items-center gap-2 text-sm font-medium text-white/80"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-sage-300" />
-            {t('hero.eyebrow')}
+            {t('hero.eyebrow', { count: USER_COUNT })}
           </motion.p>
 
           <motion.h1
             {...fadeUp}
             transition={{ duration: 0.6, delay: 0.08, ease: EASE }}
-            className="mt-5 text-balance text-5xl font-extrabold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-7xl"
+            className="mt-5 text-balance font-montserrat text-5xl font-light leading-[1.1] text-white sm:text-6xl lg:text-7xl"
           >
-            <Highlight text={t('hero.title')} mutedClassName="text-white/45" />
+            <Highlight text={t('hero.title')} />
           </motion.h1>
 
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.6, delay: 0.16, ease: EASE }}
-            className="mt-6 max-w-lg text-lg leading-relaxed text-white/80"
+            className="mt-5 max-w-md text-sm leading-relaxed text-white/75 sm:text-base"
           >
             {t('hero.subtitle')}
           </motion.p>
@@ -164,16 +186,16 @@ function Hero() {
           <motion.div
             {...fadeUp}
             transition={{ duration: 0.6, delay: 0.24, ease: EASE }}
-            className="mt-8 flex flex-col gap-3 sm:flex-row"
+            className="mt-7 flex flex-col gap-3 sm:flex-row"
           >
             <Link to="/auth" state={SIGNUP_STATE} className="w-full sm:w-auto">
-              <button className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-semibold text-ink transition-all hover:bg-neutral-100 active:scale-[0.98] sm:w-auto">
+              <button className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-ink px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98] sm:w-auto">
                 {t('hero.ctaPrimary')}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </button>
             </Link>
             <a href="#process" className="w-full sm:w-auto">
-              <button className="inline-flex w-full items-center justify-center rounded-full border border-white/30 bg-white/10 px-7 py-3.5 text-base font-semibold text-white backdrop-blur transition-all hover:bg-white/20 active:scale-[0.98] sm:w-auto">
+              <button className="inline-flex w-full items-center justify-center rounded-full border border-white/25 bg-ink/40 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-ink/60 active:scale-[0.98] sm:w-auto">
                 {t('hero.ctaSecondary')}
               </button>
             </a>
@@ -185,7 +207,7 @@ function Hero() {
       <motion.div
         {...fadeUp}
         transition={{ duration: 0.6, delay: 0.35, ease: EASE }}
-        className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-8 sm:px-6"
+        className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-16 sm:px-6 sm:pb-20"
       >
         <div className="grid grid-cols-1 divide-y divide-white/15 border-t border-white/15 pt-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {items.map((it) => (

@@ -8,7 +8,10 @@ import Landing from '@/pages/Landing';
 // Pages chargées à la demande (code-splitting → bundle initial allégé).
 const Auth = lazy(() => import('@/pages/Auth'));
 const Onboarding = lazy(() => import('@/pages/Onboarding'));
+const Home = lazy(() => import('@/pages/Home'));
 const Scan = lazy(() => import('@/pages/Scan'));
+const Recommendations = lazy(() => import('@/pages/Recommendations'));
+const Assistant = lazy(() => import('@/pages/Assistant'));
 const Results = lazy(() => import('@/pages/Results'));
 const Routine = lazy(() => import('@/pages/Routine'));
 const Progress = lazy(() => import('@/pages/Progress'));
@@ -52,9 +55,20 @@ export const router = createBrowserRouter([
   {
     element: <RequireAuth />,
     children: [
+      // Accueil / tableau de bord (gratuit).
+      { path: '/home', element: <Home /> },
       // Gratuit : le scan (l'« aha moment ») + le teaser de résultats.
       { path: '/scan', element: <Scan /> },
       { path: '/results/:scanId?', element: <Results /> },
+      { path: '/assistant', element: <Assistant /> },
+      {
+        path: '/recommendations',
+        element: (
+          <PremiumOnly feature="generic">
+            <Recommendations />
+          </PremiumOnly>
+        ),
+      },
       // Réservé au Premium (écran d'upgrade en gratuit, vérifié côté serveur).
       {
         path: '/routine',

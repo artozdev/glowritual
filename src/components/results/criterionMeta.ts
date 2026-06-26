@@ -14,6 +14,8 @@ import {
   Wind,
   Diamond,
   SunMedium,
+  Spline,
+  Brush,
   type LucideIcon,
 } from 'lucide-react';
 import type { CriterionId } from '@/types/domain';
@@ -31,6 +33,8 @@ export const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
   dark_circles: Eye,
   shine: SunMedium,
   lip_brow_care: Smile,
+  neck: Spline,
+  hair_scalp: Brush,
   symmetry: Scale,
   posture: PersonStanding,
   tone: Dumbbell,

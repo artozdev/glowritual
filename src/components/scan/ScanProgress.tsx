@@ -5,21 +5,23 @@ import { ZONE_STEPS } from '@/lib/scanZones';
 interface Props {
   /** Index de l'étape en cours (0-based). */
   current: number;
+  /** Étapes affichées (défaut : zones du scan visage). */
+  steps?: { id: string; title: string }[];
 }
 
 /** Barre de progression des étapes du scan (1/5, 2/5…). */
-export function ScanProgress({ current }: Props) {
-  const total = ZONE_STEPS.length;
+export function ScanProgress({ current, steps = ZONE_STEPS }: Props) {
+  const total = steps.length;
   return (
     <div>
       <div className="flex items-center justify-between px-0.5">
         <p className="text-xs font-medium text-sage-600">
           Étape {Math.min(current + 1, total)}/{total}
         </p>
-        <p className="text-xs text-sage-400">{ZONE_STEPS[current]?.title}</p>
+        <p className="text-xs text-sage-400">{steps[current]?.title}</p>
       </div>
       <div className="mt-2 flex items-center gap-1.5">
-        {ZONE_STEPS.map((step, i) => {
+        {steps.map((step, i) => {
           const done = i < current;
           const activeStep = i === current;
           return (
