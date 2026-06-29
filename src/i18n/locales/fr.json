@@ -177,6 +177,42 @@
       }
     ]
   },
+  "pricing": {
+    "titlePre": "Arrête de payer des formations « looksmaxxing » à ",
+    "old": "4 000 €",
+    "titleMid": ".",
+    "glow": " Glow, c’est ",
+    "price": "16,99 €/mois",
+    "subtitle": "Une approche 100 % naturelle, sans chirurgie, sans complexe. Tout ce qu’il te faut pour révéler ton glow, à un prix juste.",
+    "items": [
+      {
+        "title": "Analyse complète de ta peau",
+        "text": "Un bilan détaillé, zone par zone, de l’état de ta peau."
+      },
+      {
+        "title": "Protocole naturel personnalisé",
+        "text": "Un plan étape par étape pour sublimer ta peau, avec des produits 100 % naturels."
+      },
+      {
+        "title": "Scores et suivi dans le temps",
+        "text": "Comprends tes scores actuels et suis ta progression réelle à chaque scan."
+      },
+      {
+        "title": "Avant / après basé sur tes vrais résultats",
+        "text": "Visualise tes progrès réels au fil des semaines, pas une projection truquée."
+      },
+      {
+        "title": "Assistant IA beauté 24h/24",
+        "text": "Pose toutes tes questions, à tout moment.",
+        "soon": true
+      }
+    ],
+    "cardName": "Glow Premium",
+    "annual": "ou 149 €/an — 2 mois offerts",
+    "reassurance": "Sans frais cachés. Annulable à tout moment.",
+    "cta": "Commencer",
+    "soon": "Bientôt"
+  },
   "finalCta": {
     "title": "Commence ton [glow up] dès aujourd’hui",
     "subtitle": "Ton premier scan est gratuit. Découvre ton potentiel en 30 secondes.",

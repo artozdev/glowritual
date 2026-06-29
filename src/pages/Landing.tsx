@@ -18,6 +18,7 @@ import { FeatureGrid } from '@/components/landing/FeatureGrid';
 import { TestimonialsCarousel, type Testimonial } from '@/components/landing/TestimonialsCarousel';
 import { UsageCarousel } from '@/components/landing/UsageCarousel';
 import { FaqAccordion } from '@/components/landing/FaqAccordion';
+import { PricingSection } from '@/components/landing/PricingSection';
 import { TawkChat } from '@/components/common/TawkChat';
 import { cn } from '@/lib/utils';
 
@@ -36,6 +37,7 @@ export default function Landing() {
       <CompareWays />
       <FeatureGrid />
       <TestimonialsSection />
+      <PricingSection />
       <DailySection />
       <FinalCta />
       <Footer />
@@ -95,9 +97,9 @@ function FloatingNav() {
               {l.label}
             </a>
           ))}
-          <Link to="/pricing" className={linkClass}>
+          <a href="#tarifs" className={linkClass}>
             {t('header.pricing')}
-          </Link>
+          </a>
         </div>
 
         <div className="flex items-center gap-2">

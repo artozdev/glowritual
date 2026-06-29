@@ -177,6 +177,42 @@
       }
     ]
   },
+  "pricing": {
+    "titlePre": "Stop paying for « looksmaxxing » courses at ",
+    "old": "€4,000",
+    "titleMid": ".",
+    "glow": " Glow is ",
+    "price": "€16.99/month",
+    "subtitle": "A 100% natural approach — no surgery, no hang-ups. Everything you need to reveal your glow, at a fair price.",
+    "items": [
+      {
+        "title": "A complete skin analysis",
+        "text": "A detailed, area-by-area assessment of your skin."
+      },
+      {
+        "title": "A personalized natural protocol",
+        "text": "A step-by-step plan to enhance your skin, with 100% natural products."
+      },
+      {
+        "title": "Scores & tracking over time",
+        "text": "Understand your current scores and follow your real progress at every scan."
+      },
+      {
+        "title": "Before / after from your real results",
+        "text": "See your real progress over the weeks — not a faked projection."
+      },
+      {
+        "title": "24/7 AI beauty assistant",
+        "text": "Ask anything, anytime.",
+        "soon": true
+      }
+    ],
+    "cardName": "Glow Premium",
+    "annual": "or €149/year — 2 months free",
+    "reassurance": "No hidden fees. Cancel anytime.",
+    "cta": "Get started",
+    "soon": "Soon"
+  },
   "finalCta": {
     "title": "Start your [glow up] today",
     "subtitle": "Your first scan is free. Discover your potential in 30 seconds.",
